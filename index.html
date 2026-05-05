@@ -501,8 +501,8 @@
         </div>
 
         <div class="field">
-          <label for="pinInput">PIN</label>
-          <input id="pinInput" class="pin-mask" type="text" name="iqc_pin_code" inputmode="numeric" autocomplete="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" placeholder="กรอก PIN" required />
+          <label for="pinInput">Password</label>
+          <input id="pinInput" class="pin-mask" type="text" name="iqc_pin_code" inputmode="numeric" autocomplete="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" placeholder="กรอก Password" required />
         </div>
 
         <button id="loginBtn" class="btn btn-primary btn-full" type="submit">เข้าสู่ระบบ</button>
@@ -537,9 +537,9 @@
         <nav class="menu">
           <button class="menu-btn active" type="button" data-page="dashboardPage">Dashboard</button>
           <button class="menu-btn" type="button" data-page="iqcEntryPage">บันทึก IQC</button>
-          <button class="menu-btn" type="button" data-page="lotSetupPage" data-roles="admin,senior">ตั้งค่า Lot / Expected</button>
+          <button class="menu-btn" type="button" data-page="lotSetupPage" data-roles="admin,manager,staff">ตั้งค่า Lot / Expected</button>
           <button class="menu-btn" type="button" data-page="historyPage">ดูย้อนหลัง</button>
-          <button class="menu-btn" type="button" data-page="reviewPage" data-roles="admin,reviewer">Reviewer</button>
+          <button class="menu-btn" type="button" data-page="reviewPage" data-roles="admin,manager,physician">Reviewer</button>
         </nav>
 
         <button id="logoutBtn" class="btn btn-danger btn-full" type="button">ออกจากระบบ</button>
@@ -677,7 +677,7 @@
           </div>
 
           <div class="card">
-            <p class="muted">เฉพาะ role reviewer/admin จะเห็นและเข้าเมนูนี้ได้</p>
+            <p class="muted">เฉพาะ role manager/physician/admin จะเห็นและเข้าเมนูนี้ได้</p>
           </div>
         </section>
       </main>
@@ -922,7 +922,9 @@
       $("userMeta").innerHTML = [
         "Username: " + safeText(user.username || "-"),
         "Role: " + safeText(user.role || "-"),
-        "Area: " + safeText(user.area || "-")
+        "Position: " + safeText(user.position || "-"),
+        "Approval: " + safeText(user.approvalLevel || "-"),
+        "Final: " + safeText(String(user.canFinalApprove || "FALSE"))
       ].join("<br>");
     }
 
