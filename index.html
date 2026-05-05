@@ -501,8 +501,8 @@
         </div>
 
         <div class="field">
-          <label for="pinInput">Password</label>
-          <input id="pinInput" class="pin-mask" type="text" name="iqc_pin_code" inputmode="numeric" autocomplete="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" placeholder="กรอก Password" required />
+          <label for="pinInput">รหัสเข้าใช้งาน</label>
+          <input id="pinInput" class="pin-mask" type="text" name="iqc_pin_code" inputmode="numeric" autocomplete="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" placeholder="กรอกรหัสเข้าใช้งาน" required />
         </div>
 
         <button id="loginBtn" class="btn btn-primary btn-full" type="submit">เข้าสู่ระบบ</button>
@@ -775,7 +775,7 @@
       showMessage("loginMessage", "", "", true);
 
       if (!username || !pin) {
-        showMessage("loginMessage", "กรุณากรอก username และ PIN", "error");
+        showMessage("loginMessage", "กรุณากรอก username และรหัสเข้าใช้งาน", "error");
         return;
       }
 
