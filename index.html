@@ -127,6 +127,11 @@
       box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
     }
 
+    .pin-mask {
+      -webkit-text-security: disc;
+      text-security: disc;
+    }
+
     .btn {
       border: 0;
       border-radius: 14px;
@@ -489,7 +494,7 @@
         </div>
       </div>
 
-      <form id="loginForm">
+      <form id="loginForm" autocomplete="off">
         <div class="field">
           <label for="usernameInput">Username / รหัสผู้ใช้</label>
           <input id="usernameInput" type="text" name="iqc_user" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="เช่น staff01" required />
@@ -497,7 +502,7 @@
 
         <div class="field">
           <label for="pinInput">PIN</label>
-          <input id="pinInput" type="password" name="iqc_pin" inputmode="numeric" autocomplete="one-time-code" placeholder="กรอก PIN" required />
+          <input id="pinInput" class="pin-mask" type="text" name="iqc_pin_code" inputmode="numeric" autocomplete="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" placeholder="กรอก PIN" required />
         </div>
 
         <button id="loginBtn" class="btn btn-primary btn-full" type="submit">เข้าสู่ระบบ</button>
