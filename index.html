@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IQC Blood Bank</title>
+  <style>
+    :root {
+      --bg: #eef5fb;
+      --card: #ffffff;
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --text: #172033;
+      --muted: #64748b;
+      --line: #dbe4ee;
+      --success: #15803d;
+      --warning: #b45309;
+      --danger: #b91c1c;
+      --soft-blue: #e0efff;
+      --soft-red: #fee2e2;
+      --soft-green: #dcfce7;
+      --shadow: 0 14px 35px rgba(15, 23, 42, 0.10);
+      --radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: linear-gradient(135deg, #edf6ff 0%, #f8fbff 45%, #eaf2ff 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font-family: inherit;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .login-shell {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 22px;
+    }
+
+    .login-card {
+      width: min(440px, 100%);
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      padding: 28px;
+    }
+
+    .brand {
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .brand-mark {
+      width: 52px;
+      height: 52px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #2563eb, #38bdf8);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 20px;
+      box-shadow: 0 10px 22px rgba(37, 99, 235, 0.25);
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.2;
+    }
+
+    .brand p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .field {
+      margin-bottom: 16px;
+    }
+
+    .field label {
+      display: block;
+      font-weight: 700;
+      font-size: 14px;
+      margin-bottom: 7px;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 14px;
+      padding: 13px 14px;
+      font-size: 16px;
+      outline: none;
+      transition: 0.18s ease;
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+    }
+
+    .btn {
+      border: 0;
+      border-radius: 14px;
+      padding: 12px 16px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: 0.18s ease;
+      font-size: 15px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+
+    .btn-light {
+      background: #f1f5f9;
+      color: var(--text);
+      border: 1px solid var(--line);
+    }
+
+    .btn-danger {
+      background: #fee2e2;
+      color: var(--danger);
+      border: 1px solid #fecaca;
+    }
+
+    .btn-full {
+      width: 100%;
+    }
+
+    .message {
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      font-size: 14px;
+      line-height: 1.45;
+    }
+
+    .message.error {
+      background: var(--soft-red);
+      color: var(--danger);
+      border: 1px solid #fecaca;
+    }
+
+    .message.success {
+      background: var(--soft-green);
+      color: var(--success);
+      border: 1px solid #bbf7d0;
+    }
+
+    .app-shell {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      background: rgba(255, 255, 255, 0.88);
+      border-right: 1px solid var(--line);
+      padding: 18px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+
+    .sidebar-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .sidebar-title h2 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .sidebar-title p {
+      margin: 2px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .user-box {
+      background: var(--soft-blue);
+      border: 1px solid #bfdbfe;
+      border-radius: var(--radius);
+      padding: 14px;
+      margin-bottom: 16px;
+    }
+
+    .user-name {
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .user-meta {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .menu {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin: 16px 0;
+    }
+
+    .menu-btn {
+      width: 100%;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text);
+      text-align: left;
+      padding: 12px 13px;
+      border-radius: 14px;
+      cursor: pointer;
+      font-weight: 700;
+      transition: 0.18s ease;
+    }
+
+    .menu-btn:hover {
+      background: #f1f5f9;
+    }
+
+    .menu-btn.active {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.22);
+    }
+
+    .menu-btn.locked {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .main {
+      padding: 26px;
+      min-width: 0;
+    }
+
+    .topbar {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.95);
+      border-bottom: 1px solid var(--line);
+      padding: 12px 14px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .mobile-menu-btn {
+      border: 1px solid var(--line);
+      background: white;
+      border-radius: 12px;
+      padding: 9px 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .page {
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    .page-header {
+      margin-bottom: 18px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .page-header h2 {
+      margin: 0;
+      font-size: 26px;
+    }
+
+    .page-header p {
+      margin: 6px 0 0;
+      color: var(--muted);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.94);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+      padding: 18px;
+    }
+
+    .card h3 {
+      margin: 0 0 8px;
+      font-size: 18px;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-weight: 800;
+      font-size: 12px;
+      margin-top: 12px;
+    }
+
+    .status-pending {
+      background: #fef3c7;
+      color: var(--warning);
+    }
+
+    .status-pass {
+      background: var(--soft-green);
+      color: var(--success);
+    }
+
+    .status-empty {
+      background: #e2e8f0;
+      color: #475569;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: white;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 760px;
+    }
+
+    th,
+    td {
+      border-bottom: 1px solid var(--line);
+      padding: 12px;
+      text-align: left;
+      font-size: 14px;
+    }
+
+    th {
+      background: #f8fafc;
+      font-weight: 800;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 34px 18px;
+      color: var(--muted);
+    }
+
+    .danger-text {
+      color: var(--danger);
+      font-weight: 800;
+    }
+
+    .success-text {
+      color: var(--success);
+      font-weight: 800;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    @media (max-width: 900px) {
+      .topbar {
+        display: flex;
+      }
+
+      .app-shell {
+        display: block;
+      }
+
+      .sidebar {
+        position: fixed;
+        z-index: 30;
+        inset: 0 auto 0 0;
+        width: min(82vw, 320px);
+        transform: translateX(-105%);
+        transition: transform 0.22s ease;
+        box-shadow: var(--shadow);
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .main {
+        padding: 18px;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .page-header {
+        display: block;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <section id="loginView" class="login-shell">
+    <div class="login-card">
+      <div class="brand">
+        <div class="brand-mark">IQC</div>
+        <div>
+          <h1>IQC Blood Bank</h1>
+          <p>ระบบบันทึก Internal Quality Control</p>
+        </div>
+      </div>
+
+      <form id="loginForm">
+        <div class="field">
+          <label for="usernameInput">Username / รหัสผู้ใช้</label>
+          <input id="usernameInput" type="text" autocomplete="username" placeholder="เช่น staff01" required />
+        </div>
+
+        <div class="field">
+          <label for="pinInput">PIN</label>
+          <input id="pinInput" type="password" autocomplete="current-password" placeholder="กรอก PIN" required />
+        </div>
+
+        <button id="loginBtn" class="btn btn-primary btn-full" type="submit">เข้าสู่ระบบ</button>
+      </form>
+
+      <div id="loginMessage" class="message hidden"></div>
+    </div>
+  </section>
+
+  <section id="appView" class="hidden">
+    <div class="topbar">
+      <button id="openMenuBtn" class="mobile-menu-btn" type="button">☰ เมนู</button>
+      <strong>IQC Blood Bank</strong>
+      <button id="topLogoutBtn" class="btn btn-danger" type="button">Logout</button>
+    </div>
+
+    <div class="app-shell">
+      <aside id="sidebar" class="sidebar">
+        <div class="sidebar-head">
+          <div class="brand-mark">IQC</div>
+          <div class="sidebar-title">
+            <h2>IQC Blood Bank</h2>
+            <p>คลังเลือด + บริจาคโลหิต</p>
+          </div>
+        </div>
+
+        <div class="user-box">
+          <div id="userFullName" class="user-name">-</div>
+          <div id="userMeta" class="user-meta">-</div>
+        </div>
+
+        <nav class="menu">
+          <button class="menu-btn active" type="button" data-page="dashboardPage">Dashboard</button>
+          <button class="menu-btn" type="button" data-page="iqcEntryPage">บันทึก IQC</button>
+          <button class="menu-btn" type="button" data-page="lotSetupPage" data-roles="admin,senior">ตั้งค่า Lot / Expected</button>
+          <button class="menu-btn" type="button" data-page="historyPage">ดูย้อนหลัง</button>
+          <button class="menu-btn" type="button" data-page="reviewPage" data-roles="admin,reviewer">Reviewer</button>
+        </nav>
+
+        <button id="logoutBtn" class="btn btn-danger btn-full" type="button">ออกจากระบบ</button>
+      </aside>
+
+      <main class="main">
+        <section id="dashboardPage" class="page">
+          <div class="page-header">
+            <div>
+              <h2>Dashboard</h2>
+              <p>ภาพรวม IQC วันนี้ และเมนูหลักของระบบ</p>
+            </div>
+            <button class="btn btn-light" type="button" onclick="refreshMe()">ตรวจ session</button>
+          </div>
+
+          <div class="grid">
+            <div class="card">
+              <h3>น้ำยาที่ใช้ประจำวัน</h3>
+              <p>บันทึก QC น้ำยาคลังเลือด/บริจาคโลหิต</p>
+              <span class="status-pill status-empty">ยังไม่เชื่อมข้อมูล</span>
+            </div>
+
+            <div class="card">
+              <h3>IH-500 / Ortho Vision Max</h3>
+              <p>บันทึกผลตาม Lot และ Expected Matrix</p>
+              <span class="status-pill status-pending">รอทำ Phase ถัดไป</span>
+            </div>
+
+            <div class="card">
+              <h3>Review</h3>
+              <p>ตรวจสอบและรับรองผล IQC</p>
+              <span class="status-pill status-empty">ใช้ตามสิทธิ์</span>
+            </div>
+          </div>
+
+          <div id="sessionMessage" class="message hidden"></div>
+        </section>
+
+        <section id="iqcEntryPage" class="page hidden">
+          <div class="page-header">
+            <div>
+              <h2>บันทึก IQC</h2>
+              <p>หน้านี้จะใช้ token ของผู้ login เป็นผู้บันทึกอัตโนมัติ</p>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="form-row">
+              <div class="field">
+                <label>พื้นที่</label>
+                <select id="areaSelect">
+                  <option value="คลังเลือด">คลังเลือด</option>
+                  <option value="บริจาคโลหิต">บริจาคโลหิต</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label>ประเภท IQC</label>
+                <select id="iqcTypeSelect">
+                  <option value="Daily Reagent">Daily Reagent</option>
+                  <option value="IH-500">IH-500</option>
+                  <option value="ORTHO">Ortho Vision Max</option>
+                  <option value="Hemochroma">Hemochroma</option>
+                  <option value="Phenotype">Red Cell Phenotype</option>
+                </select>
+              </div>
+            </div>
+
+            <p class="muted">Phase ถัดไปจะเชื่อม API เพื่อดึงเครื่อง, Lot active และสร้างฟอร์มกรอก Actual result จาก Lot_Expected</p>
+          </div>
+        </section>
+
+        <section id="lotSetupPage" class="page hidden">
+          <div class="page-header">
+            <div>
+              <h2>ตั้งค่า Lot / Expected</h2>
+              <p>สำหรับ senior/admin เพื่อกำหนดว่า Lot นี้ควรขึ้นผลอะไร</p>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="form-row">
+              <div class="field">
+                <label>เครื่อง</label>
+                <select>
+                  <option>IH-500</option>
+                  <option>Ortho Vision Max</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label>Lot No.</label>
+                <input type="text" placeholder="เช่น 69040" />
+              </div>
+            </div>
+
+            <p class="muted">ตอนนี้เป็นโครงหน้า UX ก่อน ขั้นต่อไปจะทำ API ดึง/บันทึก Lot_Header และ Lot_Expected</p>
+          </div>
+        </section>
+
+        <section id="historyPage" class="page hidden">
+          <div class="page-header">
+            <div>
+              <h2>ดูย้อนหลัง</h2>
+              <p>ค้นหาประวัติ IQC ตามวันที่ เครื่อง ผู้บันทึก หรือผลผ่าน/ไม่ผ่าน</p>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>วันที่</th>
+                  <th>รายการ</th>
+                  <th>เครื่อง</th>
+                  <th>ผู้บันทึก</th>
+                  <th>ผล</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td colspan="5" class="empty-state">ยังไม่ได้เชื่อมข้อมูลประวัติ</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="reviewPage" class="page hidden">
+          <div class="page-header">
+            <div>
+              <h2>Reviewer</h2>
+              <p>ตรวจสอบผล IQC และรับรองผล</p>
+            </div>
+          </div>
+
+          <div class="card">
+            <p class="muted">เฉพาะ role reviewer/admin จะเห็นและเข้าเมนูนี้ได้</p>
+          </div>
+        </section>
+      </main>
+    </div>
+  </section>
+
+  <script>
+    /********************************************************
+     * 1) ตั้งค่า URL ตรงนี้ก่อนใช้งานจริง
+     ********************************************************/
+    const WEB_APP_URL = "PASTE_YOUR_WEB_APP_URL_HERE";
+
+    /********************************************************
+     * 2) State / Storage
+     ********************************************************/
+    const STORAGE_KEYS = {
+      token: "iqcToken",
+      user: "iqcUser",
+      expiresAt: "iqcExpiresAt"
+    };
+
+    let currentUser = null;
+
+    const $ = (id) => document.getElementById(id);
+
+    /********************************************************
+     * 3) API helper สำหรับเรียก Apps Script
+     ********************************************************/
+    async function api(action, payload = {}) {
+      if (!WEB_APP_URL || WEB_APP_URL === "PASTE_YOUR_WEB_APP_URL_HERE") {
+        throw new Error("ยังไม่ได้ใส่ WEB_APP_URL ในไฟล์ index.html");
+      }
+
+      const response = await fetch(WEB_APP_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "text/plain;charset=utf-8"
+        },
+        body: JSON.stringify({
+          action,
+          ...payload
+        })
+      });
+
+      const text = await response.text();
+
+      try {
+        return JSON.parse(text);
+      } catch (err) {
+        console.error("Raw response:", text);
+        throw new Error("อ่านคำตอบจาก Apps Script ไม่ได้ อาจยังไม่ได้ Deploy เป็น Web app หรือ URL ไม่ถูกต้อง");
+      }
+    }
+
+    function getToken() {
+      return localStorage.getItem(STORAGE_KEYS.token) || "";
+    }
+
+    function saveAuth(result) {
+      localStorage.setItem(STORAGE_KEYS.token, result.token);
+      localStorage.setItem(STORAGE_KEYS.user, JSON.stringify(result.user));
+      localStorage.setItem(STORAGE_KEYS.expiresAt, result.expiresAt || "");
+      currentUser = result.user;
+    }
+
+    function clearAuth() {
+      localStorage.removeItem(STORAGE_KEYS.token);
+      localStorage.removeItem(STORAGE_KEYS.user);
+      localStorage.removeItem(STORAGE_KEYS.expiresAt);
+      currentUser = null;
+    }
+
+    function loadUserFromStorage() {
+      const rawUser = localStorage.getItem(STORAGE_KEYS.user);
+      if (!rawUser) return null;
+
+      try {
+        return JSON.parse(rawUser);
+      } catch (err) {
+        clearAuth();
+        return null;
+      }
+    }
+
+    /********************************************************
+     * 4) Login / Logout / Session
+     ********************************************************/
+    async function handleLogin(event) {
+      event.preventDefault();
+
+      const username = $("usernameInput").value.trim();
+      const pin = $("pinInput").value.trim();
+      const loginBtn = $("loginBtn");
+
+      showMessage("loginMessage", "", "", true);
+
+      if (!username || !pin) {
+        showMessage("loginMessage", "กรุณากรอก username และ PIN", "error");
+        return;
+      }
+
+      loginBtn.disabled = true;
+      loginBtn.textContent = "กำลังเข้าสู่ระบบ...";
+
+      try {
+        const result = await api("login", {
+          username,
+          pin,
+          userAgent: navigator.userAgent
+        });
+
+        if (!result.ok) {
+          showMessage("loginMessage", result.message || "เข้าสู่ระบบไม่สำเร็จ", "error");
+          return;
+        }
+
+        saveAuth(result);
+        showApp();
+        renderUserBox();
+        applyRoleMenus();
+        showPage("dashboardPage");
+      } catch (err) {
+        showMessage("loginMessage", err.message, "error");
+      } finally {
+        loginBtn.disabled = false;
+        loginBtn.textContent = "เข้าสู่ระบบ";
+      }
+    }
+
+    async function handleLogout() {
+      const token = getToken();
+
+      try {
+        if (token) {
+          await api("logout", {
+            token,
+            userAgent: navigator.userAgent
+          });
+        }
+      } catch (err) {
+        console.warn("Logout API warning:", err.message);
+      }
+
+      clearAuth();
+      showLogin();
+    }
+
+    async function refreshMe() {
+      const token = getToken();
+
+      if (!token) {
+        showLogin();
+        return;
+      }
+
+      showMessage("sessionMessage", "กำลังตรวจ session...", "success");
+
+      try {
+        const result = await api("me", { token });
+
+        if (!result.ok) {
+          clearAuth();
+          showLogin();
+          return;
+        }
+
+        currentUser = result.user;
+        localStorage.setItem(STORAGE_KEYS.user, JSON.stringify(result.user));
+        localStorage.setItem(STORAGE_KEYS.expiresAt, result.expiresAt || "");
+        renderUserBox();
+        applyRoleMenus();
+        showMessage("sessionMessage", "Session ใช้งานได้: " + result.user.fullName, "success");
+      } catch (err) {
+        clearAuth();
+        showLogin();
+      }
+    }
+
+    async function boot() {
+      const token = getToken();
+      const storedUser = loadUserFromStorage();
+
+      if (!token || !storedUser) {
+        showLogin();
+        return;
+      }
+
+      currentUser = storedUser;
+      showApp();
+      renderUserBox();
+      applyRoleMenus();
+      showPage("dashboardPage");
+
+      try {
+        const result = await api("me", { token });
+        if (!result.ok) throw new Error(result.message || "session invalid");
+
+        currentUser = result.user;
+        localStorage.setItem(STORAGE_KEYS.user, JSON.stringify(result.user));
+        localStorage.setItem(STORAGE_KEYS.expiresAt, result.expiresAt || "");
+        renderUserBox();
+        applyRoleMenus();
+      } catch (err) {
+        clearAuth();
+        showLogin();
+      }
+    }
+
+    /********************************************************
+     * 5) UI helpers
+     ********************************************************/
+    function showLogin() {
+      $("loginView").classList.remove("hidden");
+      $("appView").classList.add("hidden");
+      $("usernameInput").focus();
+    }
+
+    function showApp() {
+      $("loginView").classList.add("hidden");
+      $("appView").classList.remove("hidden");
+    }
+
+    function showMessage(elementId, text, type, hide = false) {
+      const box = $(elementId);
+      box.className = "message";
+
+      if (hide || !text) {
+        box.classList.add("hidden");
+        box.textContent = "";
+        return;
+      }
+
+      box.classList.add(type === "success" ? "success" : "error");
+      box.textContent = text;
+    }
+
+    function renderUserBox() {
+      const user = currentUser || loadUserFromStorage();
+      if (!user) return;
+
+      $("userFullName").textContent = user.fullName || user.username || "-";
+      $("userMeta").innerHTML = [
+        "Username: " + safeText(user.username || "-"),
+        "Role: " + safeText(user.role || "-"),
+        "Area: " + safeText(user.area || "-")
+      ].join("<br>");
+    }
+
+    function applyRoleMenus() {
+      const user = currentUser || loadUserFromStorage();
+      const role = (user?.role || "").toLowerCase();
+
+      document.querySelectorAll(".menu-btn[data-roles]").forEach((btn) => {
+        const allowedRoles = btn.dataset.roles.split(",").map((x) => x.trim().toLowerCase());
+        const allowed = allowedRoles.includes(role);
+
+        btn.classList.toggle("hidden", !allowed);
+        btn.classList.toggle("locked", !allowed);
+      });
+    }
+
+    function showPage(pageId) {
+      document.querySelectorAll(".page").forEach((page) => page.classList.add("hidden"));
+      $(pageId).classList.remove("hidden");
+
+      document.querySelectorAll(".menu-btn").forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.page === pageId);
+      });
+
+      $("sidebar").classList.remove("open");
+    }
+
+    function safeText(text) {
+      return String(text)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    /********************************************************
+     * 6) Event binding
+     ********************************************************/
+    $("loginForm").addEventListener("submit", handleLogin);
+    $("logoutBtn").addEventListener("click", handleLogout);
+    $("topLogoutBtn").addEventListener("click", handleLogout);
+    $("openMenuBtn").addEventListener("click", () => {
+      $("sidebar").classList.toggle("open");
+    });
+
+    document.querySelectorAll(".menu-btn[data-page]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        if (btn.classList.contains("locked")) return;
+        showPage(btn.dataset.page);
+      });
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        $("sidebar").classList.remove("open");
+      }
+    });
+
+    boot();
+  </script>
+</body>
+</html>
