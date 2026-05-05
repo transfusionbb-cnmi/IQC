@@ -492,12 +492,12 @@
       <form id="loginForm">
         <div class="field">
           <label for="usernameInput">Username / รหัสผู้ใช้</label>
-          <input id="usernameInput" type="text" autocomplete="username" placeholder="เช่น staff01" required />
+          <input id="usernameInput" type="text" name="iqc_user" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="เช่น staff01" required />
         </div>
 
         <div class="field">
           <label for="pinInput">PIN</label>
-          <input id="pinInput" type="password" autocomplete="current-password" placeholder="กรอก PIN" required />
+          <input id="pinInput" type="password" name="iqc_pin" inputmode="numeric" autocomplete="one-time-code" placeholder="กรอก PIN" required />
         </div>
 
         <button id="loginBtn" class="btn btn-primary btn-full" type="submit">เข้าสู่ระบบ</button>
