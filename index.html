@@ -312,11 +312,11 @@
         </div>
 
         <nav class="menu">
-          <button class="menu-btn active" type="button" data-page="dashboardPage">Dashboard</button>
-          <button class="menu-btn" type="button" data-page="iqcEntryPage">บันทึก IQC</button>
-          <button class="menu-btn" type="button" data-page="lotSetupPage" data-roles="admin,manager,staff">ตั้งค่า Lot / Expected</button>
-          <button class="menu-btn" type="button" data-page="historyPage">ดูย้อนหลัง</button>
-          <button class="menu-btn" type="button" data-page="reviewPage" data-roles="admin,manager,physician">Reviewer</button>
+          <button class="menu-btn active" type="button" data-page="dashboardPage" onclick="showPage('dashboardPage')">Dashboard</button>
+          <button class="menu-btn" type="button" data-page="iqcEntryPage" onclick="showPage('iqcEntryPage')">บันทึก IQC</button>
+          <button class="menu-btn" type="button" data-page="lotSetupPage" data-roles="admin,manager,staff" onclick="showPage('lotSetupPage')">ตั้งค่า Lot / Expected</button>
+          <button class="menu-btn" type="button" data-page="historyPage" onclick="showPage('historyPage')">ดูย้อนหลัง</button>
+          <button class="menu-btn" type="button" data-page="reviewPage" data-roles="admin,manager,physician" onclick="showPage('reviewPage')">Reviewer</button>
         </nav>
 
         <button id="logoutBtn" class="btn btn-danger btn-full" type="button">ออกจากระบบ</button>
@@ -329,7 +329,7 @@
               <h2>Dashboard</h2>
               <p>ภาพรวม IQC วันนี้ และเมนูหลักของระบบ</p>
             </div>
-            <button id="checkSessionBtn" class="btn btn-light" type="button">ตรวจ session</button>
+            <button id="checkSessionBtn" class="btn btn-light" type="button" onclick="refreshMe()">ตรวจ session</button>
           </div>
 
           <div class="grid">
@@ -358,7 +358,7 @@
               <h2>บันทึก IQC</h2>
               <p>เลือกประเภท QC จาก Master Sheet แล้วระบบจะแสดงรายการย่อยที่เกี่ยวข้อง</p>
             </div>
-            <button id="reloadMasterBtn" class="btn btn-light" type="button">โหลด Master ใหม่</button>
+            <button id="reloadMasterBtn" class="btn btn-light" type="button" onclick="loadQCMasterData(true)">โหลด Master ใหม่</button>
           </div>
 
           <div class="card">
@@ -788,7 +788,8 @@
         if (item) lines.push("รายการย่อย: " + buildItemLabel(item));
       }
 
-      showMessage("qcSelectedInfo", lines.join("\n"), "success");
+      showMessage("qcSelectedInfo", lines.join("
+"), "success");
     }
 
     function fillSelect(selectId, options, placeholder) {
