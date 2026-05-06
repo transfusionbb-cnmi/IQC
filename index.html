@@ -891,12 +891,24 @@
           return;
         }
 
-        qcMasterData = {
-          catalog: Array.isArray(result.catalog) ? result.catalog : [],
-          items: Array.isArray(result.items) ? result.items : [],
-          components: Array.isArray(result.components) ? result.components : [],
-          loaded: true
-        };
+        const returnedLotHeaders = Array.isArray(result.lotHeaders)
+  ? result.lotHeaders
+  : (Array.isArray(result.lots) ? result.lots : []);
+
+const returnedLotExpected = Array.isArray(result.lotExpected)
+  ? result.lotExpected
+  : (Array.isArray(result.expected) ? result.expected : []);
+
+qcMasterData = {
+  catalog: Array.isArray(result.catalog) ? result.catalog : [],
+  items: Array.isArray(result.items) ? result.items : [],
+  components: Array.isArray(result.components) ? result.components : [],
+  lotHeaders: returnedLotHeaders,
+  lots: returnedLotHeaders,
+  lotExpected: returnedLotExpected,
+  expected: returnedLotExpected,
+  loaded: true
+};
 
         const lotResult = await api("getLotSetupData", { token });
 
