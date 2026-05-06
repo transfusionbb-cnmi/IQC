@@ -1305,6 +1305,19 @@ function cleanKey(value) {
   return String(value || "").trim();
 }
 
+function getItemNameFromId(itemId) {
+  const target = cleanKey(itemId);
+  const item = (qcMasterData.items || []).find((x) => cleanKey(x.itemId) === target);
+  return item ? (item.itemName || target) : target;
+}
+
+function getComponentNameFromId(componentId) {
+  const target = cleanKey(componentId);
+  const item = (qcMasterData.components || []).find((x) => cleanKey(x.componentId) === target);
+  if (!item) return target;
+  return item.displayName || [item.productType, item.preparationType].filter(Boolean).join(" / ");
+}
+    
    function renderExistingLotDropdown() {
   const select = $("existingLotSelect");
   const info = $("existingLotInfoText");
@@ -1323,10 +1336,17 @@ function cleanKey(value) {
   }
 
   const qcId = cleanKey($("lotQcCatalogSelect")?.value || "");
-  const selected = qcMasterData.catalog.find((item) => cleanKey(item.qcId) === qcId);
+  const selected = (qcMasterData.catalog || []).find((item) => cleanKey(item.qcId) === qcId);
 
   if (!qcId || !selected) {
     fillSelect("existingLotSelect", [], "กรุณาเลือกรายการ QC ก่อน");
+    return;
+  }
+
+  const allLots = Array.isArray(lotSetupData.lots) ? lotSetupData.lots : [];
+
+  if (!allLots.length) {
+    fillSelect("existingLotSelect", [], "ยังโหลด Lot_Header ไม่ได้ หรือ Lot_Header ว่าง");
     return;
   }
 
@@ -1335,43 +1355,44 @@ function cleanKey(value) {
 
   if (selected.qcGroup === "Blood Component QC") {
     componentId = cleanKey($("lotComponentSelect")?.value || "");
-
-    if (!componentId) {
-      fillSelect("existingLotSelect", [], "กรุณาเลือกชนิดถุง / วิธีเตรียมก่อน");
-      return;
-    }
   } else {
     itemId = cleanKey($("lotItemSelect")?.value || "");
-
-    if (!itemId) {
-      fillSelect("existingLotSelect", [], "กรุณาเลือกรายการย่อยก่อน");
-      return;
-    }
   }
 
-  const lots = (lotSetupData.lots || []).filter((lot) => {
-    const lotQcId = cleanKey(getRowValue(lot, ["qcId", "qcid", "qcID", "qcld"]));
-    const lotItemId = cleanKey(getRowValue(lot, ["itemId", "itemid", "itemID", "itemld"]));
-    const lotComponentId = cleanKey(getRowValue(lot, ["componentId", "componentid", "componentID", "componentld"]));
+  const activeLotsInThisQc = allLots.filter((lot) => {
+    const lotQcId = cleanKey(getRowValue(lot, ["qcId", "qcid", "qcID"]));
     const lotStatus = cleanKey(getRowValue(lot, ["status"])).toLowerCase() || "active";
 
-    if (lotQcId !== qcId) return false;
-    if (lotStatus !== "active") return false;
-
-    if (componentId) {
-      return lotComponentId === componentId;
-    }
-
-    return lotItemId === itemId;
+    return lotQcId === qcId && lotStatus === "active";
   });
+
+  const exactLots = activeLotsInThisQc.filter((lot) => {
+    const lotItemId = cleanKey(getRowValue(lot, ["itemId", "itemid", "itemID"]));
+    const lotComponentId = cleanKey(getRowValue(lot, ["componentId", "componentid", "componentID"]));
+
+    if (componentId) return lotComponentId === componentId;
+    if (itemId) return lotItemId === itemId;
+
+    return true;
+  });
+
+  const lotsToShow = exactLots.length ? exactLots : activeLotsInThisQc;
+
+  let placeholder = "ยังไม่มี Lot active ของรายการนี้";
+
+  if (lotsToShow.length && !exactLots.length) {
+    placeholder = "พบ Lot ใน QC นี้ แต่ item/component ไม่ตรง ให้เลือกตรวจสอบ";
+  } else if (lotsToShow.length) {
+    placeholder = "เลือก Lot ที่มีอยู่";
+  }
 
   fillSelect(
     "existingLotSelect",
-    lots.map((lot) => ({
-      value: cleanKey(getRowValue(lot, ["lotId", "lotid", "lotID", "lotld"])),
+    lotsToShow.map((lot) => ({
+      value: cleanKey(getRowValue(lot, ["lotId", "lotid", "lotID"])),
       label: buildLotLabel(lot)
     })),
-    lots.length ? "เลือก Lot ที่มีอยู่" : "ยังไม่มี Lot active ของรายการนี้"
+    placeholder
   );
 }
 
@@ -1396,20 +1417,11 @@ function handleExistingLotChange() {
   }
 
   const lot = (lotSetupData.lots || []).find((item) => {
-    return cleanKey(getRowValue(item, ["lotId", "lotid", "lotID", "lotld"])) === lotId;
+    return cleanKey(getRowValue(item, ["lotId", "lotid", "lotID"])) === lotId;
   });
 
   if (!lot) {
-    if (info) info.value = "";
-
-    if ($("saveLotHeaderBtn")) {
-      $("saveLotHeaderBtn").textContent = "บันทึก Lot";
-    }
-
-    if (typeof clearExpectedForm === "function") {
-      clearExpectedForm();
-    }
-
+    if (info) info.value = "หา Lot นี้ไม่เจอในข้อมูลที่โหลดมา";
     return;
   }
 
@@ -1420,13 +1432,25 @@ function handleExistingLotChange() {
   $("lotStatusSelect").value = getRowValue(lot, ["status"]) || "active";
   $("lotNoteInput").value = getRowValue(lot, ["note"]) || "";
 
+  const itemId = getRowValue(lot, ["itemId", "itemid", "itemID"]);
+  const componentId = getRowValue(lot, ["componentId", "componentid", "componentID"]);
+
+  const lines = [
+    "Lot ID: " + lotId,
+    "Lot No.: " + (getRowValue(lot, ["lotNo", "lotno", "lotNO"]) || "-"),
+    "ชนิด: " + (getRowValue(lot, ["lotType", "lottype"]) || "-"),
+    "รายการ: " + (itemId ? getItemNameFromId(itemId) : "-"),
+    "Component: " + (componentId ? getComponentNameFromId(componentId) : "-"),
+    "Exp: " + (toDateInputValue(getRowValue(lot, ["expDate", "expdate"])) || "-")
+  ];
+
   if (info) {
-    info.value =
-      "Lot: " + (getRowValue(lot, ["lotNo", "lotno", "lotNO"]) || "-") +
-      " | Exp: " + (toDateInputValue(getRowValue(lot, ["expDate", "expdate"])) || "-");
+    info.value = lines.join("\n")
   }
 
-  $("saveLotHeaderBtn").textContent = "แก้ไข Lot";
+  if ($("saveLotHeaderBtn")) {
+    $("saveLotHeaderBtn").textContent = "แก้ไข Lot";
+  }
 
   if (typeof renderExpectedForSelectedLot === "function") {
     renderExpectedForSelectedLot();
@@ -1437,11 +1461,15 @@ function buildLotLabel(lot) {
   const lotNo = getRowValue(lot, ["lotNo", "lotno", "lotNO"]);
   const lotType = getRowValue(lot, ["lotType", "lottype"]);
   const expDate = toDateInputValue(getRowValue(lot, ["expDate", "expdate"]));
+  const itemId = getRowValue(lot, ["itemId", "itemid", "itemID"]);
+  const componentId = getRowValue(lot, ["componentId", "componentid", "componentID"]);
 
   const parts = [];
 
   if (lotNo) parts.push("Lot " + lotNo);
   if (lotType) parts.push(lotType);
+  if (itemId) parts.push(getItemNameFromId(itemId));
+  if (componentId) parts.push(getComponentNameFromId(componentId));
   if (expDate) parts.push("Exp " + expDate);
 
   return parts.join(" | ");
@@ -1719,6 +1747,7 @@ async function saveExpectedFromForm() {
       bind("qcItemSelect", "change", showSelectedQCSummary);
       bind("componentProductSelect", "change", handleComponentProductChange);
       bind("componentPreparationSelect", "change", showSelectedQCSummary);
+      bind("existingLotSelect", "change", handleExistingLotChange);
       bind("openMenuBtn", "click", () => $("sidebar").classList.toggle("open"));
 
       document.querySelectorAll(".menu-btn[data-page]").forEach((btn) => {
