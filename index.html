@@ -1228,5 +1228,128 @@
 
     boot();
   </script>
+  <script>
+    /********************************************************
+     * EMERGENCY LOGIN FALLBACK
+     * ใช้กันฟอร์มเด้ง URL และกันกรณี event binding หลุด
+     ********************************************************/
+    (function () {
+      const FALLBACK_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx1mGA3zXlUdWcCQkWqf_UPTbr4S1evnNhkjf9_GbfwA1IwduWLrg-zxYuANXx-xgcq/exec";
+
+      function el(id) {
+        return document.getElementById(id);
+      }
+
+      function fallbackMessage(text, type) {
+        const box = el("loginMessage");
+        if (!box) return;
+        box.className = "message " + (type || "error");
+        box.textContent = text || "";
+        box.classList.toggle("hidden", !text);
+      }
+
+      function renderFallbackUserBox(user) {
+        const nameBox = el("userFullName");
+        const metaBox = el("userMeta");
+        if (nameBox) nameBox.textContent = user.fullName || user.username || "-";
+        if (metaBox) {
+          metaBox.innerHTML = [
+            "Username: " + (user.username || "-"),
+            "Role: " + (user.role || "-"),
+            "Position: " + (user.position || "-"),
+            "Approval: " + (user.approvalLevel || "-"),
+            "Final: " + String(user.canFinalApprove || false)
+          ].join("<br>");
+        }
+      }
+
+      async function fallbackLogin(event) {
+        if (event) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+
+        const usernameInput = el("usernameInput");
+        const pinInput = el("pinInput");
+        const btn = el("loginBtn");
+
+        const username = usernameInput ? usernameInput.value.trim() : "";
+        const pin = pinInput ? pinInput.value.trim() : "";
+
+        if (!username || !pin) {
+          fallbackMessage("กรุณากรอก username และรหัสเข้าใช้งาน", "error");
+          return false;
+        }
+
+        if (btn) {
+          btn.disabled = true;
+          btn.textContent = "กำลังเข้าสู่ระบบ...";
+        }
+
+        try {
+          const res = await fetch(FALLBACK_WEB_APP_URL, {
+            method: "POST",
+            headers: {
+              "Content-Type": "text/plain;charset=utf-8"
+            },
+            body: JSON.stringify({
+              action: "login",
+              username: username,
+              pin: pin,
+              userAgent: navigator.userAgent
+            })
+          });
+
+          const text = await res.text();
+          let result;
+
+          try {
+            result = JSON.parse(text);
+          } catch (jsonErr) {
+            console.error("Raw Apps Script response:", text);
+            throw new Error("Apps Script ตอบกลับไม่ใช่ JSON กรุณาเช็ก Deploy Web app");
+          }
+
+          if (!result.ok) {
+            fallbackMessage(result.message || "เข้าสู่ระบบไม่สำเร็จ", "error");
+            return false;
+          }
+
+          localStorage.setItem("iqcToken", result.token);
+          localStorage.setItem("iqcUser", JSON.stringify(result.user));
+          localStorage.setItem("iqcExpiresAt", result.expiresAt || "");
+
+          const loginView = el("loginView");
+          const appView = el("appView");
+          if (loginView) loginView.classList.add("hidden");
+          if (appView) appView.classList.remove("hidden");
+          renderFallbackUserBox(result.user || {});
+          fallbackMessage("", "success");
+          return false;
+        } catch (err) {
+          fallbackMessage(err.message || String(err), "error");
+          return false;
+        } finally {
+          if (btn) {
+            btn.disabled = false;
+            btn.textContent = "เข้าสู่ระบบ";
+          }
+        }
+      }
+
+      const form = el("loginForm");
+      const btn = el("loginBtn");
+
+      if (form) {
+        form.setAttribute("onsubmit", "return false;");
+        form.addEventListener("submit", fallbackLogin, true);
+      }
+
+      if (btn) {
+        btn.setAttribute("type", "button");
+        btn.addEventListener("click", fallbackLogin, true);
+      }
+    })();
+  </script>
 </body>
 </html>
