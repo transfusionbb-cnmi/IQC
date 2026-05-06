@@ -788,8 +788,7 @@
         if (item) lines.push("รายการย่อย: " + buildItemLabel(item));
       }
 
-      showMessage("qcSelectedInfo", lines.join("
-"), "success");
+      showMessage("qcSelectedInfo", lines.join("\\n"), "success");
     }
 
     function fillSelect(selectId, options, placeholder) {
