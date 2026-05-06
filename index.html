@@ -14,18 +14,18 @@
 
   <style>
     :root {
-      --primary: #4f46e5;
-      --primary-dark: #4338ca;
-      --bg: #f4f6fb;
+      --primary: #7ea6d9;
+      --primary-dark: #6c91c2;
+      --bg: #f6f9fc;
       --card: #ffffff;
-      --sidebar: #111827;
-      --sidebar-soft: #1f2937;
-      --text: #111827;
-      --muted: #6b7280;
-      --border: #e5e7eb;
-      --danger: #dc2626;
-      --success: #16a34a;
-      --warning: #f59e0b;
+      --sidebar: #5d7292;
+      --sidebar-soft: #6e84a3;
+      --text: #233245;
+      --muted: #708198;
+      --border: #dbe5ef;
+      --danger: #c96a6a;
+      --success: #6ea58a;
+      --warning: #d5ac6c;
     }
 
     * {
@@ -48,17 +48,21 @@
       display: none !important;
     }
 
+    body.mobile-menu-open {
+      overflow: hidden;
+    }
+
     /* LOGIN */
     .login-page {
-      min-height: 100vh;
+      min-height: 100dvh;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 24px;
       background:
-        radial-gradient(circle at top left, #dbeafe 0, transparent 32%),
-        radial-gradient(circle at bottom right, #ede9fe 0, transparent 34%),
-        #f8fafc;
+        radial-gradient(circle at top left, #eaf3ff 0, transparent 34%),
+        radial-gradient(circle at bottom right, #dfeeff 0, transparent 36%),
+        #f7fbff;
     }
 
     .login-card {
@@ -76,13 +80,13 @@
       height: 82px;
       margin: 0 auto 18px;
       border-radius: 50%;
-      background: linear-gradient(135deg, var(--primary), #7c3aed);
+      background: var(--primary);
       color: white;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 38px;
-      box-shadow: 0 18px 36px rgba(79, 70, 229, 0.28);
+      box-shadow: 0 16px 30px rgba(108, 145, 194, 0.22);
     }
 
     .login-title {
@@ -139,8 +143,8 @@
     .btn-primary {
       width: 100%;
       color: #fff;
-      background: linear-gradient(135deg, var(--primary), #7c3aed);
-      box-shadow: 0 12px 24px rgba(79, 70, 229, 0.24);
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      box-shadow: 0 10px 22px rgba(108, 145, 194, 0.22);
     }
 
     .btn-primary:hover {
@@ -182,7 +186,8 @@
 
     .sidebar {
       width: 292px;
-      min-height: 100vh;
+      height: 100dvh;
+      min-height: 100dvh;
       background: var(--sidebar);
       color: #e5e7eb;
       position: fixed;
@@ -193,6 +198,8 @@
       flex-direction: column;
       transition: width 0.2s ease, transform 0.2s ease;
       z-index: 30;
+      overflow: hidden;
+      overscroll-behavior: contain;
     }
 
     .sidebar.collapsed {
@@ -213,7 +220,7 @@
       width: 42px;
       height: 42px;
       border-radius: 14px;
-      background: linear-gradient(135deg, var(--primary), #7c3aed);
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
       display: flex;
       align-items: center;
       justify-content: center;
@@ -248,11 +255,14 @@
 
     .sidebar-body {
       flex: 1;
+      min-height: 0;
       padding: 12px;
+      padding-bottom: 24px;
       overflow-y: auto;
       overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
     }
-
     .menu-item,
     .menu-toggle,
     .submenu-item {
@@ -280,7 +290,7 @@
 
     .menu-item.active,
     .submenu-item.active {
-      background: rgba(79, 70, 229, 0.28);
+      background: rgba(126, 166, 217, 0.28);
       color: #fff;
     }
 
@@ -318,8 +328,9 @@
     }
 
     .sidebar-footer {
-      padding: 14px;
+      padding: 14px 14px calc(14px + env(safe-area-inset-bottom));
       border-top: 1px solid rgba(255, 255, 255, 0.08);
+      background: var(--sidebar);
     }
 
     .user-box {
@@ -451,8 +462,8 @@
       border-radius: 999px;
       font-size: 12px;
       font-weight: 600;
-      background: #eef2ff;
-      color: #4338ca;
+      background: #eaf2fb;
+      color: #5679a8;
     }
 
     .mobile-overlay {
@@ -930,16 +941,18 @@
       if (window.innerWidth <= 900) {
         sidebar.classList.add("mobile-open");
         document.getElementById("mobileOverlay").classList.add("show");
+        document.body.classList.add("mobile-menu-open");
         return;
       }
 
-      sidebar.classList.toggle("collapsed");
-      main.classList.toggle("collapsed");
-    }
+  sidebar.classList.toggle("collapsed");
+  main.classList.toggle("collapsed");
+}
 
     function closeMobileSidebar() {
       document.getElementById("sidebar").classList.remove("mobile-open");
       document.getElementById("mobileOverlay").classList.remove("show");
+      document.body.classList.remove("mobile-menu-open");
     }
 
     function showLoginAlert(message) {
