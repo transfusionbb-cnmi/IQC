@@ -494,7 +494,7 @@
         </div>
       </div>
 
-      <form id="loginForm" autocomplete="off">
+      <form id="loginForm" autocomplete="off" onsubmit="return false;">
         <div class="field">
           <label for="usernameInput">Username / รหัสผู้ใช้</label>
           <input id="usernameInput" type="text" name="iqc_user" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="เช่น staff01" required />
@@ -505,7 +505,7 @@
           <input id="pinInput" class="pin-mask" type="text" name="iqc_pin_code" inputmode="numeric" autocomplete="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" placeholder="กรอกรหัสเข้าใช้งาน" required />
         </div>
 
-        <button id="loginBtn" class="btn btn-primary btn-full" type="submit">เข้าสู่ระบบ</button>
+        <button id="loginBtn" class="btn btn-primary btn-full" type="button" onclick="handleLogin(event)">เข้าสู่ระบบ</button>
       </form>
 
       <div id="loginMessage" class="message hidden"></div>
@@ -1191,42 +1191,42 @@
      * 6) Event binding
      ********************************************************/
     function bind(id, eventName, handler) {
-  const el = $(id);
-  if (!el) {
-    console.warn("ไม่พบ element id:", id);
-    return;
-  }
-  el.addEventListener(eventName, handler);
-}
+      const el = $(id);
+      if (!el) {
+        console.warn("ไม่พบ element id:", id);
+        return;
+      }
+      el.addEventListener(eventName, handler);
+    }
 
-bind("loginForm", "submit", handleLogin);
-bind("qcGroupSelect", "change", handleQCGroupChange);
-bind("qcCatalogSelect", "change", handleQCCatalogChange);
-bind("qcItemSelect", "change", showSelectedQCSummary);
-bind("componentProductSelect", "change", handleComponentProductChange);
-bind("componentPreparationSelect", "change", showSelectedQCSummary);
-bind("logoutBtn", "click", handleLogout);
-bind("topLogoutBtn", "click", handleLogout);
-bind("openMenuBtn", "click", () => {
-  const sidebar = $("sidebar");
-  if (sidebar) sidebar.classList.toggle("open");
-});
+    bind("loginForm", "submit", handleLogin);
+    bind("qcGroupSelect", "change", handleQCGroupChange);
+    bind("qcCatalogSelect", "change", handleQCCatalogChange);
+    bind("qcItemSelect", "change", showSelectedQCSummary);
+    bind("componentProductSelect", "change", handleComponentProductChange);
+    bind("componentPreparationSelect", "change", showSelectedQCSummary);
+    bind("logoutBtn", "click", handleLogout);
+    bind("topLogoutBtn", "click", handleLogout);
+    bind("openMenuBtn", "click", () => {
+      const sidebar = $("sidebar");
+      if (sidebar) sidebar.classList.toggle("open");
+    });
 
-document.querySelectorAll(".menu-btn[data-page]").forEach((btn) => {
-  btn.addEventListener("click", () => {
-    if (btn.classList.contains("locked")) return;
-    showPage(btn.dataset.page);
-  });
-});
+    document.querySelectorAll(".menu-btn[data-page]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        if (btn.classList.contains("locked")) return;
+        showPage(btn.dataset.page);
+      });
+    });
 
-document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape") {
-    const sidebar = $("sidebar");
-    if (sidebar) sidebar.classList.remove("open");
-  }
-});
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        const sidebar = $("sidebar");
+        if (sidebar) sidebar.classList.remove("open");
+      }
+    });
 
-boot();
+    boot();
   </script>
 </body>
 </html>
