@@ -429,7 +429,7 @@
             <div id="lotItemBox" class="form-row hidden">
               <div class="field">
                 <label>รายการย่อย / เครื่อง / การทดสอบ</label>
-                <select id="lotItemSelect"></select>
+                <select id="lotItemSelect" onchange="renderExistingLotDropdown()"></select>
               </div>
 
               <div class="field">
@@ -453,7 +453,7 @@
 
               <div class="field">
                 <label>ชนิดถุง / วิธีเตรียม</label>
-                <select id="lotComponentSelect"></select>
+                <select id="lotComponentSelect" onchange="renderExistingLotDropdown()"></select>
               </div>
             </div>
 
@@ -492,6 +492,22 @@
             <button id="saveLotHeaderBtn" class="btn btn-primary" type="button" onclick="saveLotHeaderFromForm()">บันทึก Lot</button>
 
             <div id="lotSetupMessage" class="message hidden"></div>
+
+            <hr style="border:0; border-top:1px solid var(--line); margin:22px 0;">
+
+            <div class="form-row">
+              <div class="field">
+                <label>Lot ที่มีอยู่</label>
+                <select id="existingLotSelect" onchange="handleExistingLotChange()">
+                  <option value="">กรุณาเลือกรายการ QC ก่อน</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label>ข้อมูล Lot ที่เลือก</label>
+                <input id="existingLotInfoText" type="text" disabled placeholder="เลือก Lot เพื่อดูข้อมูล" />
+              </div>
+            </div>
           </div>
         </section>
 
@@ -534,6 +550,8 @@
 
     let currentUser = null;
     let qcMasterData = { catalog: [], items: [], components: [], loaded: false };
+    let lotSetupData = { lots: [], expected: [], loaded: false };
+    let currentEditingLotId = "";
 
     const $ = (id) => document.getElementById(id);
 
@@ -765,8 +783,9 @@
     async function loadQCMasterData(forceReload = false) {
       const token = getToken();
       if (!token) return;
-      if (qcMasterData.loaded && !forceReload) {
-        renderQCMasterDropdowns();
+      if (qcMasterData.loaded && lotSetupData.loaded && !forceReload) {
+        renderLotSetupDropdowns();
+        renderExistingLotDropdown();
         return;
       }
 
@@ -786,8 +805,23 @@
           loaded: true
         };
 
-        renderQCMasterDropdowns();
-        showMessage("qcSelectedInfo", "โหลด Master สำเร็จ", "success");
+        const lotResult = await api("getLotSetupData", { token });
+
+        if (!lotResult.ok) {
+          showMessage("lotSetupMessage", lotResult.message || "โหลด Lot เดิมไม่สำเร็จ", "error");
+          return;
+        }
+
+        lotSetupData = {
+          lots: Array.isArray(lotResult.lots) ? lotResult.lots : [],
+          expected: Array.isArray(lotResult.expected) ? lotResult.expected : [],
+          loaded: true
+        };
+
+        renderLotSetupDropdowns();
+        renderExistingLotDropdown();
+        showMessage("lotSetupMessage", "โหลด Master และ Lot เดิมสำเร็จ", "success");
+        
       } catch (err) {
         showMessage("qcSelectedInfo", err.message || String(err), "error");
       }
@@ -1013,6 +1047,7 @@ function handleLotQCCatalogChange() {
 
     $("lotItemBox").classList.remove("hidden");
   }
+  renderExistingLotDropdown();
 }
 
 function handleLotComponentProductChange() {
@@ -1028,6 +1063,7 @@ function handleLotComponentProductChange() {
     })),
     "เลือกชนิดถุง / วิธีเตรียม"
   );
+  renderExistingLotDropdown();
 }
 
 async function saveLotHeaderFromForm() {
@@ -1089,6 +1125,7 @@ async function saveLotHeaderFromForm() {
   try {
     const result = await api("saveLotHeader", {
       token,
+      lotId: currentEditingLotId,
       qcId,
       itemId,
       componentId,
@@ -1117,6 +1154,11 @@ async function saveLotHeaderFromForm() {
     $("lotExpDateInput").value = "";
     $("lotStartDateInput").value = "";
     $("lotNoteInput").value = "";
+
+    currentEditingLotId = "";
+    lotSetupData.loaded = false;
+
+    await loadLotSetupMasterData(true);
   } catch (err) {
     showMessage("lotSetupMessage", err.message || String(err), "error");
   } finally {
@@ -1124,7 +1166,131 @@ async function saveLotHeaderFromForm() {
     btn.textContent = "บันทึก Lot";
   }
 }
-        
+
+    function renderExistingLotDropdown() {
+  const select = $("existingLotSelect");
+  const info = $("existingLotInfoText");
+
+  if (!select || !info) return;
+
+  currentEditingLotId = "";
+  info.value = "";
+  $("saveLotHeaderBtn").textContent = "บันทึก Lot";
+
+  const qcId = $("lotQcCatalogSelect")?.value || "";
+  const selected = qcMasterData.catalog.find((item) => item.qcId === qcId);
+
+  if (!qcId || !selected) {
+    fillSelect("existingLotSelect", [], "กรุณาเลือกรายการ QC ก่อน");
+    return;
+  }
+
+  let itemId = "";
+  let componentId = "";
+
+  if (selected.qcGroup === "Blood Component QC") {
+    componentId = $("lotComponentSelect")?.value || "";
+
+    if (!componentId) {
+      fillSelect("existingLotSelect", [], "กรุณาเลือกชนิดถุง / วิธีเตรียมก่อน");
+      return;
+    }
+  } else {
+    itemId = $("lotItemSelect")?.value || "";
+
+    if (!itemId) {
+      fillSelect("existingLotSelect", [], "กรุณาเลือกรายการย่อยก่อน");
+      return;
+    }
+  }
+
+  const lots = lotSetupData.lots.filter((lot) => {
+    const sameQc = String(lot.qcId || "") === qcId;
+    const active = String(lot.status || "active").toLowerCase() === "active";
+
+    if (!sameQc || !active) return false;
+
+    if (componentId) {
+      return String(lot.componentId || "") === componentId;
+    }
+
+    return String(lot.itemId || "") === itemId;
+  });
+
+  fillSelect(
+    "existingLotSelect",
+    lots.map((lot) => ({
+      value: lot.lotId,
+      label: buildLotLabel(lot)
+    })),
+    lots.length ? "เลือก Lot ที่มีอยู่" : "ยังไม่มี Lot active ของรายการนี้"
+  );
+}
+
+function handleExistingLotChange() {
+  const lotId = $("existingLotSelect").value;
+  const info = $("existingLotInfoText");
+
+  currentEditingLotId = lotId || "";
+
+  if (!lotId) {
+    if (info) info.value = "";
+    $("saveLotHeaderBtn").textContent = "บันทึก Lot";
+    return;
+  }
+
+  const lot = lotSetupData.lots.find((item) => String(item.lotId || "") === lotId);
+
+  if (!lot) {
+    if (info) info.value = "";
+    $("saveLotHeaderBtn").textContent = "บันทึก Lot";
+    return;
+  }
+
+  $("lotTypeSelect").value = lot.lotType || "reagent";
+  $("lotNoInput").value = lot.lotNo || "";
+  $("lotExpDateInput").value = toDateInputValue(lot.expDate);
+  $("lotStartDateInput").value = toDateInputValue(lot.startDate);
+  $("lotStatusSelect").value = lot.status || "active";
+  $("lotNoteInput").value = lot.note || "";
+
+  if (info) {
+    info.value = "Lot: " + (lot.lotNo || "-") + " | Exp: " + (lot.expDate || "-");
+  }
+
+  $("saveLotHeaderBtn").textContent = "แก้ไข Lot";
+}
+
+function buildLotLabel(lot) {
+  const parts = [];
+
+  if (lot.lotNo) parts.push("Lot " + lot.lotNo);
+  if (lot.lotType) parts.push(lot.lotType);
+  if (lot.expDate) parts.push("Exp " + toDateInputValue(lot.expDate));
+
+  return parts.join(" | ");
+}
+
+function toDateInputValue(value) {
+  if (!value) return "";
+
+  const text = String(value).trim();
+
+  if (/^\d{4}-\d{2}-\d{2}/.test(text)) {
+    return text.slice(0, 10);
+  }
+
+  const match = text.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (match) {
+    const dd = match[1].padStart(2, "0");
+    const mm = match[2].padStart(2, "0");
+    const yyyy = match[3];
+    return yyyy + "-" + mm + "-" + dd;
+  }
+
+  return "";
+}
+    
     function safeText(text) {
       return String(text)
         .replaceAll("&", "&amp;")
