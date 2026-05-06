@@ -516,7 +516,7 @@
     <div class="topbar">
       <button id="openMenuBtn" class="mobile-menu-btn" type="button">☰ เมนู</button>
       <strong>IQC Blood Bank</strong>
-      <button id="topLogoutBtn" class="btn btn-danger" type="button">Logout</button>
+      <button id="topLogoutBtn" class="btn btn-danger" type="button" onclick="emergencyLogout(event)">Logout</button>
     </div>
 
     <div class="app-shell">
@@ -542,7 +542,7 @@
           <button class="menu-btn" type="button" data-page="reviewPage" data-roles="admin,manager,physician">Reviewer</button>
         </nav>
 
-        <button id="logoutBtn" class="btn btn-danger btn-full" type="button">ออกจากระบบ</button>
+        <button id="logoutBtn" class="btn btn-danger btn-full" type="button" onclick="emergencyLogout(event)">ออกจากระบบ</button>
       </aside>
 
       <main class="main">
@@ -1350,6 +1350,72 @@
         btn.addEventListener("click", fallbackLogin, true);
       }
     })();
+  </script>
+  <script>
+    /********************************************************
+     * EMERGENCY LOGOUT FALLBACK
+     * กันกรณี event binding หลักหลุด ทำให้กดออกจากระบบไม่ได้
+     ********************************************************/
+    window.emergencyLogout = async function (event) {
+      if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+
+      const token = localStorage.getItem("iqcToken") || "";
+      const WEB_APP = typeof WEB_APP_URL !== "undefined"
+        ? WEB_APP_URL
+        : "https://script.google.com/macros/s/AKfycbx1mGA3zXlUdWcCQkWqf_UPTbr4S1evnNhkjf9_GbfwA1IwduWLrg-zxYuANXx-xgcq/exec";
+
+      // ล้างฝั่ง browser ก่อนเสมอ เพื่อให้ผู้ใช้หลุดออกทันที
+      localStorage.removeItem("iqcToken");
+      localStorage.removeItem("iqcUser");
+      localStorage.removeItem("iqcExpiresAt");
+
+      const loginView = document.getElementById("loginView");
+      const appView = document.getElementById("appView");
+      const usernameInput = document.getElementById("usernameInput");
+      const pinInput = document.getElementById("pinInput");
+
+      if (appView) appView.classList.add("hidden");
+      if (loginView) loginView.classList.remove("hidden");
+      if (pinInput) pinInput.value = "";
+      if (usernameInput) usernameInput.focus();
+
+      // แจ้ง Apps Script ทีหลัง ถ้าล้มเหลวก็ไม่ควรขวางการออกจากระบบ
+      try {
+        if (token) {
+          await fetch(WEB_APP, {
+            method: "POST",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify({
+              action: "logout",
+              token: token,
+              userAgent: navigator.userAgent
+            })
+          });
+        }
+      } catch (err) {
+        console.warn("Logout API warning:", err);
+      }
+
+      return false;
+    };
+
+    setTimeout(function () {
+      const logoutBtn = document.getElementById("logoutBtn");
+      const topLogoutBtn = document.getElementById("topLogoutBtn");
+
+      if (logoutBtn) {
+        logoutBtn.setAttribute("type", "button");
+        logoutBtn.onclick = window.emergencyLogout;
+      }
+
+      if (topLogoutBtn) {
+        topLogoutBtn.setAttribute("type", "button");
+        topLogoutBtn.onclick = window.emergencyLogout;
+      }
+    }, 0);
   </script>
 </body>
 </html>
