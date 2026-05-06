@@ -34,7 +34,6 @@
     }
 
     button, input, select, textarea { font-family: inherit; }
-    button { cursor: pointer; }
     .hidden { display: none !important; }
 
     .login-shell {
@@ -283,7 +282,7 @@
           <input id="pinInput" class="pin-mask" type="text" name="iqc_pin_code" inputmode="numeric" autocomplete="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" placeholder="กรอกรหัสเข้าใช้งาน" required />
         </div>
 
-        <button id="loginBtn" class="btn btn-primary btn-full" type="button" onclick="loginClick(event)">เข้าสู่ระบบ</button>
+        <button id="loginBtn" class="btn btn-primary btn-full" type="button">เข้าสู่ระบบ</button>
       </form>
 
       <div id="loginMessage" class="message hidden"></div>
@@ -292,9 +291,9 @@
 
   <section id="appView" class="hidden">
     <div class="topbar">
-      <button id="openMenuBtn" class="mobile-menu-btn" type="button" onclick="toggleMenu()">☰ เมนู</button>
+      <button id="openMenuBtn" class="mobile-menu-btn" type="button">☰ เมนู</button>
       <strong>IQC Blood Bank</strong>
-      <button id="topLogoutBtn" class="btn btn-danger" type="button" onclick="logoutClick(event)">Logout</button>
+      <button id="topLogoutBtn" class="btn btn-danger" type="button">Logout</button>
     </div>
 
     <div class="app-shell">
@@ -315,12 +314,12 @@
         <nav class="menu">
           <button class="menu-btn active" type="button" data-page="dashboardPage" onclick="showPage('dashboardPage')">Dashboard</button>
           <button class="menu-btn" type="button" data-page="iqcEntryPage" onclick="showPage('iqcEntryPage')">บันทึก IQC</button>
-          <button class="menu-btn" type="button" data-page="lotSetupPage" data-roles="admin,sup_manager" onclick="showPage('lotSetupPage')">ตั้งค่า Lot / Expected</button>
+          <button class="menu-btn" type="button" data-page="lotSetupPage" data-roles="admin,manager,staff" onclick="showPage('lotSetupPage')">ตั้งค่า Lot / Expected</button>
           <button class="menu-btn" type="button" data-page="historyPage" onclick="showPage('historyPage')">ดูย้อนหลัง</button>
-          <button class="menu-btn" type="button" data-page="reviewPage" data-roles="admin,manager,sup_manager,physician" onclick="showPage('reviewPage')">Reviewer</button>
+          <button class="menu-btn" type="button" data-page="reviewPage" data-roles="admin,manager,physician" onclick="showPage('reviewPage')">Reviewer</button>
         </nav>
 
-        <button id="logoutBtn" class="btn btn-danger btn-full" type="button" onclick="logoutClick(event)">ออกจากระบบ</button>
+        <button id="logoutBtn" class="btn btn-danger btn-full" type="button">ออกจากระบบ</button>
       </aside>
 
       <main class="main">
@@ -366,18 +365,18 @@
             <div class="form-row">
               <div class="field">
                 <label>กลุ่ม QC</label>
-                <select id="qcGroupSelect" onchange="handleQCGroupChange()"><option value="">ยังไม่ได้โหลดข้อมูล</option></select>
+                <select id="qcGroupSelect"><option value="">ยังไม่ได้โหลดข้อมูล</option></select>
               </div>
               <div class="field">
                 <label>รายการ QC</label>
-                <select id="qcCatalogSelect" onchange="handleQCCatalogChange()"><option value="">กรุณาเลือกกลุ่ม QC ก่อน</option></select>
+                <select id="qcCatalogSelect"><option value="">กรุณาเลือกกลุ่ม QC ก่อน</option></select>
               </div>
             </div>
 
             <div id="qcItemBox" class="form-row hidden">
               <div class="field">
                 <label>รายการย่อย / เครื่อง / การทดสอบ</label>
-                <select id="qcItemSelect" onchange="showSelectedQCSummary()"></select>
+                <select id="qcItemSelect"></select>
               </div>
               <div class="field">
                 <label>Trigger</label>
@@ -388,11 +387,11 @@
             <div id="componentBox" class="form-row hidden">
               <div class="field">
                 <label>ผลิตภัณฑ์</label>
-                <select id="componentProductSelect" onchange="handleComponentProductChange()"></select>
+                <select id="componentProductSelect"></select>
               </div>
               <div class="field">
                 <label>ชนิดถุง / วิธีเตรียม</label>
-                <select id="componentPreparationSelect" onchange="showSelectedQCSummary()"></select>
+                <select id="componentPreparationSelect"></select>
               </div>
             </div>
 
@@ -433,51 +432,43 @@
               <p>ตรวจสอบผล IQC และรับรองผล</p>
             </div>
           </div>
-          <div class="card"><p class="muted">เฉพาะ role manager/sup_manager/physician/admin จะเห็นและเข้าเมนูนี้ได้</p></div>
+          <div class="card"><p class="muted">เฉพาะ role manager/physician/admin จะเห็นและเข้าเมนูนี้ได้</p></div>
         </section>
       </main>
     </div>
   </section>
 
   <script>
-    var WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx1mGA3zXlUdWcCQkWqf_UPTbr4S1evnNhkjf9_GbfwA1IwduWLrg-zxYuANXx-xgcq/exec";
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx1mGA3zXlUdWcCQkWqf_UPTbr4S1evnNhkjf9_GbfwA1IwduWLrg-zxYuANXx-xgcq/exec";
 
-    var STORAGE_KEYS = {
+    const STORAGE_KEYS = {
       token: "iqcToken",
       user: "iqcUser",
       expiresAt: "iqcExpiresAt"
     };
 
-    var currentUser = null;
-    var qcMasterData = { catalog: [], items: [], components: [], loaded: false };
+    let currentUser = null;
+    let qcMasterData = { catalog: [], items: [], components: [], loaded: false };
 
-    function $(id) {
-      return document.getElementById(id);
-    }
+    const $ = (id) => document.getElementById(id);
 
-    function api(action, payload) {
-      payload = payload || {};
-      payload.action = action;
-
-      return fetch(WEB_APP_URL, {
+    async function api(action, payload = {}) {
+      const response = await fetch(WEB_APP_URL, {
         method: "POST",
         headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify(payload)
-      }).then(function (response) {
-        return response.text();
-      }).then(function (text) {
-        try {
-          return JSON.parse(text);
-        } catch (err) {
-          console.error("Raw response:", text);
-          throw new Error("อ่านคำตอบจาก Apps Script ไม่ได้ กรุณาเช็ก Deploy Web app");
-        }
+        body: JSON.stringify({ action, ...payload })
       });
+
+      const text = await response.text();
+      try {
+        return JSON.parse(text);
+      } catch (err) {
+        console.error("Raw response:", text);
+        throw new Error("อ่านคำตอบจาก Apps Script ไม่ได้ กรุณาเช็ก Deploy Web app");
+      }
     }
 
-    function getToken() {
-      return localStorage.getItem(STORAGE_KEYS.token) || "";
-    }
+    function getToken() { return localStorage.getItem(STORAGE_KEYS.token) || ""; }
 
     function saveAuth(result) {
       localStorage.setItem(STORAGE_KEYS.token, result.token || "");
@@ -494,53 +485,49 @@
     }
 
     function loadUserFromStorage() {
-      var rawUser = localStorage.getItem(STORAGE_KEYS.user);
+      const rawUser = localStorage.getItem(STORAGE_KEYS.user);
       if (!rawUser) return null;
-      try {
-        return JSON.parse(rawUser);
-      } catch (err) {
-        clearAuth();
-        return null;
-      }
+      try { return JSON.parse(rawUser); } catch (err) { clearAuth(); return null; }
     }
 
-    function showMessage(elementId, text, type, hide) {
-      var box = $(elementId);
+    function showMessage(elementId, text, type, hide = false) {
+      const box = $(elementId);
       if (!box) return;
-
       box.className = "message";
-
       if (hide || !text) {
         box.classList.add("hidden");
         box.textContent = "";
         return;
       }
-
       box.classList.add(type === "success" ? "success" : "error");
       box.textContent = text;
     }
 
     function showLogin() {
-      if ($("loginView")) $("loginView").classList.remove("hidden");
-      if ($("appView")) $("appView").classList.add("hidden");
-      if ($("pinInput")) $("pinInput").value = "";
-      if ($("usernameInput")) $("usernameInput").focus();
+      const loginView = $("loginView");
+      const appView = $("appView");
+      if (loginView) loginView.classList.remove("hidden");
+      if (appView) appView.classList.add("hidden");
+      const pin = $("pinInput");
+      if (pin) pin.value = "";
+      const username = $("usernameInput");
+      if (username) username.focus();
     }
 
     function showApp() {
-      if ($("loginView")) $("loginView").classList.add("hidden");
-      if ($("appView")) $("appView").classList.remove("hidden");
+      $("loginView").classList.add("hidden");
+      $("appView").classList.remove("hidden");
     }
 
-    function loginClick(event) {
+    async function handleLogin(event) {
       if (event) {
         event.preventDefault();
         event.stopPropagation();
       }
 
-      var username = $("usernameInput").value.trim();
-      var pin = $("pinInput").value.trim();
-      var loginBtn = $("loginBtn");
+      const username = $("usernameInput").value.trim();
+      const pin = $("pinInput").value.trim();
+      const loginBtn = $("loginBtn");
 
       showMessage("loginMessage", "", "", true);
 
@@ -552,14 +539,11 @@
       loginBtn.disabled = true;
       loginBtn.textContent = "กำลังเข้าสู่ระบบ...";
 
-      api("login", {
-        username: username,
-        pin: pin,
-        userAgent: navigator.userAgent
-      }).then(function (result) {
+      try {
+        const result = await api("login", { username, pin, userAgent: navigator.userAgent });
         if (!result.ok) {
           showMessage("loginMessage", result.message || "เข้าสู่ระบบไม่สำเร็จ", "error");
-          return;
+          return false;
         }
 
         saveAuth(result);
@@ -567,69 +551,64 @@
         renderUserBox();
         applyRoleMenus();
         showPage("dashboardPage");
-      }).catch(function (err) {
+        return false;
+      } catch (err) {
         showMessage("loginMessage", err.message || String(err), "error");
-      }).finally(function () {
+        return false;
+      } finally {
         loginBtn.disabled = false;
         loginBtn.textContent = "เข้าสู่ระบบ";
-      });
-
-      return false;
+      }
     }
 
-    function logoutClick(event) {
+    async function handleLogout(event) {
       if (event) {
         event.preventDefault();
         event.stopPropagation();
       }
 
-      var token = getToken();
+      const token = getToken();
       clearAuth();
       showLogin();
 
-      if (token) {
-        api("logout", {
-          token: token,
-          userAgent: navigator.userAgent
-        }).catch(function (err) {
-          console.warn("Logout warning:", err.message || err);
-        });
+      try {
+        if (token) {
+          await api("logout", { token, userAgent: navigator.userAgent });
+        }
+      } catch (err) {
+        console.warn("Logout API warning:", err.message || err);
       }
 
       return false;
     }
 
-    function refreshMe() {
-      var token = getToken();
-      if (!token) {
-        showLogin();
-        return;
-      }
+    async function refreshMe() {
+      const token = getToken();
+      if (!token) { showLogin(); return; }
 
       showMessage("sessionMessage", "กำลังตรวจ session...", "success");
 
-      api("me", { token: token }).then(function (result) {
+      try {
+        const result = await api("me", { token });
         if (!result.ok) {
           clearAuth();
           showLogin();
           return;
         }
-
         currentUser = result.user;
         localStorage.setItem(STORAGE_KEYS.user, JSON.stringify(result.user));
         localStorage.setItem(STORAGE_KEYS.expiresAt, result.expiresAt || "");
         renderUserBox();
         applyRoleMenus();
         showMessage("sessionMessage", "Session ใช้งานได้: " + (result.user.fullName || result.user.username), "success");
-      }).catch(function (err) {
+      } catch (err) {
         showMessage("sessionMessage", err.message || String(err), "error");
-      });
+      }
     }
 
-    function boot() {
-      var token = getToken();
-      var storedUser = loadUserFromStorage();
-
+    async function boot() {
+      const token = getToken();
+      const storedUser = loadUserFromStorage();
       if (!token || !storedUser) {
         showLogin();
         return;
@@ -640,12 +619,24 @@
       renderUserBox();
       applyRoleMenus();
       showPage("dashboardPage");
+
+      try {
+        const result = await api("me", { token });
+        if (!result.ok) throw new Error(result.message || "session invalid");
+        currentUser = result.user;
+        localStorage.setItem(STORAGE_KEYS.user, JSON.stringify(result.user));
+        localStorage.setItem(STORAGE_KEYS.expiresAt, result.expiresAt || "");
+        renderUserBox();
+        applyRoleMenus();
+      } catch (err) {
+        clearAuth();
+        showLogin();
+      }
     }
 
     function renderUserBox() {
-      var user = currentUser || loadUserFromStorage();
+      const user = currentUser || loadUserFromStorage();
       if (!user) return;
-
       $("userFullName").textContent = user.fullName || user.username || "-";
       $("userMeta").innerHTML = [
         "Username: " + safeText(user.username || "-"),
@@ -657,48 +648,34 @@
     }
 
     function applyRoleMenus() {
-      var user = currentUser || loadUserFromStorage();
-      var role = String((user && user.role) || "").toLowerCase();
-
-      var buttons = document.querySelectorAll(".menu-btn[data-roles]");
-      for (var i = 0; i < buttons.length; i++) {
-        var btn = buttons[i];
-        var allowedRoles = btn.getAttribute("data-roles").split(",").map(function (x) {
-          return x.trim().toLowerCase();
-        });
-        btn.classList.toggle("hidden", allowedRoles.indexOf(role) === -1);
-      }
+      const user = currentUser || loadUserFromStorage();
+      const role = String(user?.role || "").toLowerCase();
+      document.querySelectorAll(".menu-btn[data-roles]").forEach((btn) => {
+        const allowedRoles = btn.dataset.roles.split(",").map((x) => x.trim().toLowerCase());
+        btn.classList.toggle("hidden", !allowedRoles.includes(role));
+      });
     }
 
     function showPage(pageId) {
-      var pages = document.querySelectorAll(".page");
-      for (var i = 0; i < pages.length; i++) {
-        pages[i].classList.add("hidden");
-      }
-
-      var page = $(pageId);
+      document.querySelectorAll(".page").forEach((page) => page.classList.add("hidden"));
+      const page = $(pageId);
       if (page) page.classList.remove("hidden");
 
-      var buttons = document.querySelectorAll(".menu-btn");
-      for (var j = 0; j < buttons.length; j++) {
-        buttons[j].classList.toggle("active", buttons[j].getAttribute("data-page") === pageId);
-      }
+      document.querySelectorAll(".menu-btn").forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.page === pageId);
+      });
 
-      if ($("sidebar")) $("sidebar").classList.remove("open");
+      const sidebar = $("sidebar");
+      if (sidebar) sidebar.classList.remove("open");
 
       if (pageId === "iqcEntryPage" && !qcMasterData.loaded) {
         loadQCMasterData(false);
       }
     }
 
-    function toggleMenu() {
-      if ($("sidebar")) $("sidebar").classList.toggle("open");
-    }
-
-    function loadQCMasterData(forceReload) {
-      var token = getToken();
+    async function loadQCMasterData(forceReload = false) {
+      const token = getToken();
       if (!token) return;
-
       if (qcMasterData.loaded && !forceReload) {
         renderQCMasterDropdowns();
         return;
@@ -706,7 +683,8 @@
 
       showMessage("qcSelectedInfo", "กำลังโหลดข้อมูล Master จาก Google Sheets...", "success");
 
-      api("getQCMasterData", { token: token }).then(function (result) {
+      try {
+        const result = await api("getQCMasterData", { token });
         if (!result.ok) {
           showMessage("qcSelectedInfo", result.message || "โหลด Master ไม่สำเร็จ", "error");
           return;
@@ -721,98 +699,76 @@
 
         renderQCMasterDropdowns();
         showMessage("qcSelectedInfo", "โหลด Master สำเร็จ", "success");
-      }).catch(function (err) {
+      } catch (err) {
         showMessage("qcSelectedInfo", err.message || String(err), "error");
-      });
+      }
     }
 
     function renderQCMasterDropdowns() {
-      var groups = uniqueValues(qcMasterData.catalog.map(function (item) { return item.qcGroup; }));
-      fillSelect("qcGroupSelect", groups.map(function (group) { return { value: group, label: group }; }), "เลือกกลุ่ม QC");
+      const groups = uniqueValues(qcMasterData.catalog.map((item) => item.qcGroup));
+      fillSelect("qcGroupSelect", groups.map((group) => ({ value: group, label: group })), "เลือกกลุ่ม QC");
       fillSelect("qcCatalogSelect", [], "กรุณาเลือกกลุ่ม QC ก่อน");
       fillSelect("qcItemSelect", [], "กรุณาเลือกรายการ QC ก่อน");
       fillSelect("componentProductSelect", [], "เลือกผลิตภัณฑ์");
       fillSelect("componentPreparationSelect", [], "เลือกชนิดถุง / วิธีเตรียม");
-
-      if ($("qcItemBox")) $("qcItemBox").classList.add("hidden");
-      if ($("componentBox")) $("componentBox").classList.add("hidden");
-      if ($("qcTriggerText")) $("qcTriggerText").value = "";
+      $("qcItemBox").classList.add("hidden");
+      $("componentBox").classList.add("hidden");
+      $("qcTriggerText").value = "";
     }
 
     function handleQCGroupChange() {
-      var group = $("qcGroupSelect").value;
-      var catalogList = qcMasterData.catalog.filter(function (item) { return item.qcGroup === group; });
-
-      fillSelect("qcCatalogSelect", catalogList.map(function (item) {
-        return { value: item.qcId, label: item.qcName };
-      }), "เลือกรายการ QC");
-
-      if ($("qcItemBox")) $("qcItemBox").classList.add("hidden");
-      if ($("componentBox")) $("componentBox").classList.add("hidden");
-      if ($("qcTriggerText")) $("qcTriggerText").value = "";
+      const group = $("qcGroupSelect").value;
+      const catalogList = qcMasterData.catalog.filter((item) => item.qcGroup === group);
+      fillSelect("qcCatalogSelect", catalogList.map((item) => ({ value: item.qcId, label: item.qcName })), "เลือกรายการ QC");
+      $("qcItemBox").classList.add("hidden");
+      $("componentBox").classList.add("hidden");
+      $("qcTriggerText").value = "";
       showMessage("qcSelectedInfo", "", "", true);
     }
 
     function handleQCCatalogChange() {
-      var qcId = $("qcCatalogSelect").value;
-      var selected = qcMasterData.catalog.find(function (item) { return item.qcId === qcId; });
-
-      if ($("qcItemBox")) $("qcItemBox").classList.add("hidden");
-      if ($("componentBox")) $("componentBox").classList.add("hidden");
-      if ($("qcTriggerText")) $("qcTriggerText").value = selected ? selected.trigger : "";
-
-      if (!selected) {
-        showMessage("qcSelectedInfo", "", "", true);
-        return;
-      }
+      const qcId = $("qcCatalogSelect").value;
+      const selected = qcMasterData.catalog.find((item) => item.qcId === qcId);
+      $("qcItemBox").classList.add("hidden");
+      $("componentBox").classList.add("hidden");
+      $("qcTriggerText").value = selected?.trigger || "";
+      if (!selected) { showMessage("qcSelectedInfo", "", "", true); return; }
 
       if (selected.qcGroup === "Blood Component QC") {
         renderComponentSelectors();
       } else {
         renderItemSelector(qcId);
       }
-
       showSelectedQCSummary();
     }
 
     function renderItemSelector(qcId) {
-      var itemList = qcMasterData.items.filter(function (item) { return item.qcId === qcId; });
-      if (!itemList.length) {
-        if ($("qcItemBox")) $("qcItemBox").classList.add("hidden");
-        return;
-      }
-
-      fillSelect("qcItemSelect", itemList.map(function (item) {
-        return { value: item.itemId, label: buildItemLabel(item) };
-      }), "เลือกรายการย่อย");
-
-      if ($("qcItemBox")) $("qcItemBox").classList.remove("hidden");
+      const itemList = qcMasterData.items.filter((item) => item.qcId === qcId);
+      if (!itemList.length) { $("qcItemBox").classList.add("hidden"); return; }
+      fillSelect("qcItemSelect", itemList.map((item) => ({ value: item.itemId, label: buildItemLabel(item) })), "เลือกรายการย่อย");
+      $("qcItemBox").classList.remove("hidden");
     }
 
     function renderComponentSelectors() {
-      var productTypes = uniqueValues(qcMasterData.components.map(function (item) { return item.productType; }));
-      fillSelect("componentProductSelect", productTypes.map(function (x) { return { value: x, label: x }; }), "เลือกผลิตภัณฑ์");
+      const productTypes = uniqueValues(qcMasterData.components.map((item) => item.productType));
+      fillSelect("componentProductSelect", productTypes.map((x) => ({ value: x, label: x })), "เลือกผลิตภัณฑ์");
       fillSelect("componentPreparationSelect", [], "เลือกชนิดถุง / วิธีเตรียม");
-      if ($("componentBox")) $("componentBox").classList.remove("hidden");
+      $("componentBox").classList.remove("hidden");
     }
 
     function handleComponentProductChange() {
-      var productType = $("componentProductSelect").value;
-      var list = qcMasterData.components.filter(function (item) { return item.productType === productType; });
-
-      fillSelect("componentPreparationSelect", list.map(function (item) {
-        return { value: item.componentId, label: item.preparationType + " — " + item.displayName };
-      }), "เลือกชนิดถุง / วิธีเตรียม");
-
+      const productType = $("componentProductSelect").value;
+      const list = qcMasterData.components.filter((item) => item.productType === productType);
+      fillSelect("componentPreparationSelect", list.map((item) => ({ value: item.componentId, label: item.preparationType + " — " + item.displayName })), "เลือกชนิดถุง / วิธีเตรียม");
       showSelectedQCSummary();
     }
 
     function showSelectedQCSummary() {
-      var qcId = $("qcCatalogSelect").value;
-      var selected = qcMasterData.catalog.find(function (item) { return item.qcId === qcId; });
+      const qcId = $("qcCatalogSelect").value;
+      const selected = qcMasterData.catalog.find((item) => item.qcId === qcId);
       if (!selected) return;
 
-      var lines = [
+      const lines = [
         "เลือก: " + (selected.qcName || "-"),
         "กลุ่ม: " + (selected.qcGroup || "-"),
         "Trigger: " + (selected.trigger || "-"),
@@ -820,57 +776,44 @@
       ];
 
       if (selected.qcGroup === "Blood Component QC") {
-        var componentId = $("componentPreparationSelect").value;
-        var component = qcMasterData.components.find(function (item) { return item.componentId === componentId; });
+        const componentId = $("componentPreparationSelect").value;
+        const component = qcMasterData.components.find((item) => item.componentId === componentId);
         if (component) {
           lines.push("ผลิตภัณฑ์: " + component.productType);
           lines.push("ถุง/วิธีเตรียม: " + component.preparationType);
         }
       } else {
-        var itemId = $("qcItemSelect").value;
-        var item = qcMasterData.items.find(function (x) { return x.itemId === itemId; });
+        const itemId = $("qcItemSelect").value;
+        const item = qcMasterData.items.find((x) => x.itemId === itemId);
         if (item) lines.push("รายการย่อย: " + buildItemLabel(item));
       }
 
-      showMessage("qcSelectedInfo", lines.join("\n"), "success");
+      showMessage("qcSelectedInfo", lines.join("
+"), "success");
     }
 
     function fillSelect(selectId, options, placeholder) {
-      var select = $(selectId);
+      const select = $(selectId);
       if (!select) return;
-
       select.innerHTML = "";
-
-      var first = document.createElement("option");
+      const first = document.createElement("option");
       first.value = "";
       first.textContent = placeholder || "เลือก";
       select.appendChild(first);
-
-      for (var i = 0; i < options.length; i++) {
-        var el = document.createElement("option");
-        el.value = options[i].value;
-        el.textContent = options[i].label;
+      options.forEach((option) => {
+        const el = document.createElement("option");
+        el.value = option.value;
+        el.textContent = option.label;
         select.appendChild(el);
-      }
+      });
     }
 
     function uniqueValues(values) {
-      var set = {};
-      var output = [];
-
-      for (var i = 0; i < values.length; i++) {
-        var text = String(values[i] || "").trim();
-        if (text && !set[text]) {
-          set[text] = true;
-          output.push(text);
-        }
-      }
-
-      return output;
+      return [...new Set(values.map((x) => String(x || "").trim()).filter(Boolean))];
     }
 
     function buildItemLabel(item) {
-      var parts = [item.itemName || "-"];
+      const parts = [item.itemName || "-"];
       if (item.instrumentCode) parts.push(item.instrumentCode);
       if (item.bemNo) parts.push("BEM " + item.bemNo);
       return parts.join(" | ");
@@ -878,14 +821,41 @@
 
     function safeText(text) {
       return String(text)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/\"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
     }
 
-    document.addEventListener("DOMContentLoaded", function () {
+    function bind(id, eventName, handler) {
+      const el = $(id);
+      if (!el) return;
+      el.addEventListener(eventName, handler);
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      bind("loginForm", "submit", handleLogin);
+      bind("loginBtn", "click", handleLogin);
+      bind("logoutBtn", "click", handleLogout);
+      bind("topLogoutBtn", "click", handleLogout);
+      bind("checkSessionBtn", "click", refreshMe);
+      bind("reloadMasterBtn", "click", () => loadQCMasterData(true));
+      bind("qcGroupSelect", "change", handleQCGroupChange);
+      bind("qcCatalogSelect", "change", handleQCCatalogChange);
+      bind("qcItemSelect", "change", showSelectedQCSummary);
+      bind("componentProductSelect", "change", handleComponentProductChange);
+      bind("componentPreparationSelect", "change", showSelectedQCSummary);
+      bind("openMenuBtn", "click", () => $("sidebar").classList.toggle("open"));
+
+      document.querySelectorAll(".menu-btn[data-page]").forEach((btn) => {
+        btn.addEventListener("click", () => showPage(btn.dataset.page));
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") $("sidebar").classList.remove("open");
+      });
+
       boot();
     });
   </script>
