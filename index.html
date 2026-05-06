@@ -23,9 +23,7 @@
       --radius: 18px;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -35,16 +33,8 @@
       min-height: 100vh;
     }
 
-    button,
-    input,
-    select,
-    textarea {
-      font-family: inherit;
-    }
-
-    .hidden {
-      display: none !important;
-    }
+    button, input, select, textarea { font-family: inherit; }
+    .hidden { display: none !important; }
 
     .login-shell {
       min-height: 100vh;
@@ -63,7 +53,7 @@
       padding: 28px;
     }
 
-    .brand {
+    .brand, .sidebar-head {
       display: flex;
       gap: 14px;
       align-items: center;
@@ -82,34 +72,18 @@
       font-weight: 800;
       font-size: 20px;
       box-shadow: 0 10px 22px rgba(37, 99, 235, 0.25);
+      flex: 0 0 auto;
     }
 
-    .brand h1 {
-      margin: 0;
-      font-size: 22px;
-      line-height: 1.2;
-    }
+    .brand h1, .sidebar-title h2 { margin: 0; font-size: 22px; line-height: 1.2; }
+    .brand p, .sidebar-title p { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
+    .sidebar-title h2 { font-size: 18px; }
+    .sidebar-title p { font-size: 12px; }
 
-    .brand p {
-      margin: 4px 0 0;
-      color: var(--muted);
-      font-size: 14px;
-    }
+    .field { margin-bottom: 16px; }
+    .field label { display: block; font-weight: 700; font-size: 14px; margin-bottom: 7px; }
 
-    .field {
-      margin-bottom: 16px;
-    }
-
-    .field label {
-      display: block;
-      font-weight: 700;
-      font-size: 14px;
-      margin-bottom: 7px;
-    }
-
-    .field input,
-    .field select,
-    .field textarea {
+    .field input, .field select, .field textarea {
       width: 100%;
       border: 1px solid var(--line);
       background: #fff;
@@ -120,17 +94,12 @@
       transition: 0.18s ease;
     }
 
-    .field input:focus,
-    .field select:focus,
-    .field textarea:focus {
+    .field input:focus, .field select:focus, .field textarea:focus {
       border-color: var(--primary);
       box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
     }
 
-    .pin-mask {
-      -webkit-text-security: disc;
-      text-security: disc;
-    }
+    .pin-mask { -webkit-text-security: disc; text-security: disc; }
 
     .btn {
       border: 0;
@@ -146,36 +115,12 @@
       gap: 8px;
     }
 
-    .btn:disabled {
-      opacity: 0.55;
-      cursor: not-allowed;
-    }
-
-    .btn-primary {
-      background: var(--primary);
-      color: white;
-    }
-
-    .btn-primary:hover:not(:disabled) {
-      background: var(--primary-dark);
-      transform: translateY(-1px);
-    }
-
-    .btn-light {
-      background: #f1f5f9;
-      color: var(--text);
-      border: 1px solid var(--line);
-    }
-
-    .btn-danger {
-      background: #fee2e2;
-      color: var(--danger);
-      border: 1px solid #fecaca;
-    }
-
-    .btn-full {
-      width: 100%;
-    }
+    .btn:disabled { opacity: 0.55; cursor: not-allowed; }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-primary:hover:not(:disabled) { background: var(--primary-dark); transform: translateY(-1px); }
+    .btn-light { background: #f1f5f9; color: var(--text); border: 1px solid var(--line); }
+    .btn-danger { background: #fee2e2; color: var(--danger); border: 1px solid #fecaca; }
+    .btn-full { width: 100%; }
 
     .message {
       margin-top: 14px;
@@ -183,25 +128,13 @@
       border-radius: 14px;
       font-size: 14px;
       line-height: 1.45;
+      white-space: pre-line;
     }
 
-    .message.error {
-      background: var(--soft-red);
-      color: var(--danger);
-      border: 1px solid #fecaca;
-    }
+    .message.error { background: var(--soft-red); color: var(--danger); border: 1px solid #fecaca; }
+    .message.success { background: var(--soft-green); color: var(--success); border: 1px solid #bbf7d0; }
 
-    .message.success {
-      background: var(--soft-green);
-      color: var(--success);
-      border: 1px solid #bbf7d0;
-    }
-
-    .app-shell {
-      display: grid;
-      grid-template-columns: 280px 1fr;
-      min-height: 100vh;
-    }
+    .app-shell { display: grid; grid-template-columns: 280px 1fr; min-height: 100vh; }
 
     .sidebar {
       background: rgba(255, 255, 255, 0.88);
@@ -213,24 +146,6 @@
       overflow-y: auto;
     }
 
-    .sidebar-head {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 18px;
-    }
-
-    .sidebar-title h2 {
-      margin: 0;
-      font-size: 18px;
-    }
-
-    .sidebar-title p {
-      margin: 2px 0 0;
-      color: var(--muted);
-      font-size: 12px;
-    }
-
     .user-box {
       background: var(--soft-blue);
       border: 1px solid #bfdbfe;
@@ -239,23 +154,10 @@
       margin-bottom: 16px;
     }
 
-    .user-name {
-      font-weight: 800;
-      margin-bottom: 4px;
-    }
+    .user-name { font-weight: 800; margin-bottom: 4px; }
+    .user-meta { color: var(--muted); font-size: 13px; line-height: 1.45; }
 
-    .user-meta {
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.45;
-    }
-
-    .menu {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin: 16px 0;
-    }
+    .menu { display: flex; flex-direction: column; gap: 8px; margin: 16px 0; }
 
     .menu-btn {
       width: 100%;
@@ -270,25 +172,10 @@
       transition: 0.18s ease;
     }
 
-    .menu-btn:hover {
-      background: #f1f5f9;
-    }
+    .menu-btn:hover { background: #f1f5f9; }
+    .menu-btn.active { background: var(--primary); color: white; box-shadow: 0 8px 18px rgba(37, 99, 235, 0.22); }
 
-    .menu-btn.active {
-      background: var(--primary);
-      color: white;
-      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.22);
-    }
-
-    .menu-btn.locked {
-      opacity: 0.45;
-      cursor: not-allowed;
-    }
-
-    .main {
-      padding: 26px;
-      min-width: 0;
-    }
+    .main { padding: 26px; min-width: 0; }
 
     .topbar {
       display: none;
@@ -312,34 +199,12 @@
       cursor: pointer;
     }
 
-    .page {
-      max-width: 1180px;
-      margin: 0 auto;
-    }
+    .page { max-width: 1180px; margin: 0 auto; }
+    .page-header { margin-bottom: 18px; display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+    .page-header h2 { margin: 0; font-size: 26px; }
+    .page-header p { margin: 6px 0 0; color: var(--muted); }
 
-    .page-header {
-      margin-bottom: 18px;
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 16px;
-    }
-
-    .page-header h2 {
-      margin: 0;
-      font-size: 26px;
-    }
-
-    .page-header p {
-      margin: 6px 0 0;
-      color: var(--muted);
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 16px;
-    }
+    .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
 
     .card {
       background: rgba(255, 255, 255, 0.94);
@@ -349,16 +214,8 @@
       padding: 18px;
     }
 
-    .card h3 {
-      margin: 0 0 8px;
-      font-size: 18px;
-    }
-
-    .card p {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.5;
-    }
+    .card h3 { margin: 0 0 8px; font-size: 18px; }
+    .card p { margin: 0; color: var(--muted); line-height: 1.5; }
 
     .status-pill {
       display: inline-flex;
@@ -371,86 +228,21 @@
       margin-top: 12px;
     }
 
-    .status-pending {
-      background: #fef3c7;
-      color: var(--warning);
-    }
+    .status-pending { background: #fef3c7; color: var(--warning); }
+    .status-empty { background: #e2e8f0; color: #475569; }
 
-    .status-pass {
-      background: var(--soft-green);
-      color: var(--success);
-    }
-
-    .status-empty {
-      background: #e2e8f0;
-      color: #475569;
-    }
-
-    .form-row {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 14px;
-    }
-
-    .table-wrap {
-      overflow-x: auto;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: white;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 760px;
-    }
-
-    th,
-    td {
-      border-bottom: 1px solid var(--line);
-      padding: 12px;
-      text-align: left;
-      font-size: 14px;
-    }
-
-    th {
-      background: #f8fafc;
-      font-weight: 800;
-    }
-
-    tr:last-child td {
-      border-bottom: 0;
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: 34px 18px;
-      color: var(--muted);
-    }
-
-    .danger-text {
-      color: var(--danger);
-      font-weight: 800;
-    }
-
-    .success-text {
-      color: var(--success);
-      font-weight: 800;
-    }
-
-    .muted {
-      color: var(--muted);
-    }
+    .form-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); background: white; }
+    table { width: 100%; border-collapse: collapse; min-width: 760px; }
+    th, td { border-bottom: 1px solid var(--line); padding: 12px; text-align: left; font-size: 14px; }
+    th { background: #f8fafc; font-weight: 800; }
+    tr:last-child td { border-bottom: 0; }
+    .empty-state { text-align: center; padding: 34px 18px; color: var(--muted); }
+    .muted { color: var(--muted); }
 
     @media (max-width: 900px) {
-      .topbar {
-        display: flex;
-      }
-
-      .app-shell {
-        display: block;
-      }
-
+      .topbar { display: flex; }
+      .app-shell { display: block; }
       .sidebar {
         position: fixed;
         z-index: 30;
@@ -460,26 +252,11 @@
         transition: transform 0.22s ease;
         box-shadow: var(--shadow);
       }
-
-      .sidebar.open {
-        transform: translateX(0);
-      }
-
-      .main {
-        padding: 18px;
-      }
-
-      .grid {
-        grid-template-columns: 1fr;
-      }
-
-      .page-header {
-        display: block;
-      }
-
-      .form-row {
-        grid-template-columns: 1fr;
-      }
+      .sidebar.open { transform: translateX(0); }
+      .main { padding: 18px; }
+      .grid { grid-template-columns: 1fr; }
+      .page-header { display: block; }
+      .form-row { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -505,7 +282,7 @@
           <input id="pinInput" class="pin-mask" type="text" name="iqc_pin_code" inputmode="numeric" autocomplete="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" placeholder="กรอกรหัสเข้าใช้งาน" required />
         </div>
 
-        <button id="loginBtn" class="btn btn-primary btn-full" type="button" onclick="handleLogin(event)">เข้าสู่ระบบ</button>
+        <button id="loginBtn" class="btn btn-primary btn-full" type="button">เข้าสู่ระบบ</button>
       </form>
 
       <div id="loginMessage" class="message hidden"></div>
@@ -516,7 +293,7 @@
     <div class="topbar">
       <button id="openMenuBtn" class="mobile-menu-btn" type="button">☰ เมนู</button>
       <strong>IQC Blood Bank</strong>
-      <button id="topLogoutBtn" class="btn btn-danger" type="button" onclick="emergencyLogout(event)">Logout</button>
+      <button id="topLogoutBtn" class="btn btn-danger" type="button">Logout</button>
     </div>
 
     <div class="app-shell">
@@ -542,7 +319,7 @@
           <button class="menu-btn" type="button" data-page="reviewPage" data-roles="admin,manager,physician">Reviewer</button>
         </nav>
 
-        <button id="logoutBtn" class="btn btn-danger btn-full" type="button" onclick="emergencyLogout(event)">ออกจากระบบ</button>
+        <button id="logoutBtn" class="btn btn-danger btn-full" type="button">ออกจากระบบ</button>
       </aside>
 
       <main class="main">
@@ -552,7 +329,7 @@
               <h2>Dashboard</h2>
               <p>ภาพรวม IQC วันนี้ และเมนูหลักของระบบ</p>
             </div>
-            <button class="btn btn-light" type="button" onclick="refreshMe()">ตรวจ session</button>
+            <button id="checkSessionBtn" class="btn btn-light" type="button">ตรวจ session</button>
           </div>
 
           <div class="grid">
@@ -561,20 +338,17 @@
               <p>บันทึก QC น้ำยาคลังเลือด/บริจาคโลหิต</p>
               <span class="status-pill status-empty">ยังไม่เชื่อมข้อมูล</span>
             </div>
-
             <div class="card">
               <h3>IH-500 / Ortho Vision Max</h3>
               <p>บันทึกผลตาม Lot และ Expected Matrix</p>
               <span class="status-pill status-pending">รอทำ Phase ถัดไป</span>
             </div>
-
             <div class="card">
               <h3>Review</h3>
               <p>ตรวจสอบและรับรองผล IQC</p>
               <span class="status-pill status-empty">ใช้ตามสิทธิ์</span>
             </div>
           </div>
-
           <div id="sessionMessage" class="message hidden"></div>
         </section>
 
@@ -584,23 +358,18 @@
               <h2>บันทึก IQC</h2>
               <p>เลือกประเภท QC จาก Master Sheet แล้วระบบจะแสดงรายการย่อยที่เกี่ยวข้อง</p>
             </div>
-            <button class="btn btn-light" type="button" onclick="loadQCMasterData(true)">โหลด Master ใหม่</button>
+            <button id="reloadMasterBtn" class="btn btn-light" type="button">โหลด Master ใหม่</button>
           </div>
 
           <div class="card">
             <div class="form-row">
               <div class="field">
                 <label>กลุ่ม QC</label>
-                <select id="qcGroupSelect">
-                  <option value="">กำลังโหลด...</option>
-                </select>
+                <select id="qcGroupSelect"><option value="">ยังไม่ได้โหลดข้อมูล</option></select>
               </div>
-
               <div class="field">
                 <label>รายการ QC</label>
-                <select id="qcCatalogSelect">
-                  <option value="">กรุณาเลือกกลุ่ม QC ก่อน</option>
-                </select>
+                <select id="qcCatalogSelect"><option value="">กรุณาเลือกกลุ่ม QC ก่อน</option></select>
               </div>
             </div>
 
@@ -609,7 +378,6 @@
                 <label>รายการย่อย / เครื่อง / การทดสอบ</label>
                 <select id="qcItemSelect"></select>
               </div>
-
               <div class="field">
                 <label>Trigger</label>
                 <input id="qcTriggerText" type="text" disabled />
@@ -621,7 +389,6 @@
                 <label>ผลิตภัณฑ์</label>
                 <select id="componentProductSelect"></select>
               </div>
-
               <div class="field">
                 <label>ชนิดถุง / วิธีเตรียม</label>
                 <select id="componentPreparationSelect"></select>
@@ -629,7 +396,6 @@
             </div>
 
             <div id="qcSelectedInfo" class="message hidden"></div>
-
             <p class="muted">ขั้นนี้เป็นการดึง Master จาก Google Sheets จริงก่อน ขั้นต่อไปจะสร้างฟอร์มบันทึกตามรายการที่เลือก</p>
           </div>
         </section>
@@ -638,28 +404,10 @@
           <div class="page-header">
             <div>
               <h2>ตั้งค่า Lot / Expected</h2>
-              <p>สำหรับ senior/admin เพื่อกำหนดว่า Lot นี้ควรขึ้นผลอะไร</p>
+              <p>สำหรับตั้งค่า Lot และ Expected result</p>
             </div>
           </div>
-
-          <div class="card">
-            <div class="form-row">
-              <div class="field">
-                <label>เครื่อง</label>
-                <select>
-                  <option>IH-500</option>
-                  <option>Ortho Vision Max</option>
-                </select>
-              </div>
-
-              <div class="field">
-                <label>Lot No.</label>
-                <input type="text" placeholder="เช่น 69040" />
-              </div>
-            </div>
-
-            <p class="muted">ตอนนี้เป็นโครงหน้า UX ก่อน ขั้นต่อไปจะทำ API ดึง/บันทึก Lot_Header และ Lot_Expected</p>
-          </div>
+          <div class="card"><p class="muted">ขั้นถัดไปจะทำ API ดึง/บันทึก Lot และ Expected Matrix</p></div>
         </section>
 
         <section id="historyPage" class="page hidden">
@@ -669,23 +417,10 @@
               <p>ค้นหาประวัติ IQC ตามวันที่ เครื่อง ผู้บันทึก หรือผลผ่าน/ไม่ผ่าน</p>
             </div>
           </div>
-
           <div class="table-wrap">
             <table>
-              <thead>
-                <tr>
-                  <th>วันที่</th>
-                  <th>รายการ</th>
-                  <th>เครื่อง</th>
-                  <th>ผู้บันทึก</th>
-                  <th>ผล</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td colspan="5" class="empty-state">ยังไม่ได้เชื่อมข้อมูลประวัติ</td>
-                </tr>
-              </tbody>
+              <thead><tr><th>วันที่</th><th>รายการ</th><th>เครื่อง</th><th>ผู้บันทึก</th><th>ผล</th></tr></thead>
+              <tbody><tr><td colspan="5" class="empty-state">ยังไม่ได้เชื่อมข้อมูลประวัติ</td></tr></tbody>
             </table>
           </div>
         </section>
@@ -697,24 +432,15 @@
               <p>ตรวจสอบผล IQC และรับรองผล</p>
             </div>
           </div>
-
-          <div class="card">
-            <p class="muted">เฉพาะ role manager/physician/admin จะเห็นและเข้าเมนูนี้ได้</p>
-          </div>
+          <div class="card"><p class="muted">เฉพาะ role manager/physician/admin จะเห็นและเข้าเมนูนี้ได้</p></div>
         </section>
       </main>
     </div>
   </section>
 
   <script>
-    /********************************************************
-     * 1) ตั้งค่า URL ตรงนี้ก่อนใช้งานจริง
-     ********************************************************/
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx1mGA3zXlUdWcCQkWqf_UPTbr4S1evnNhkjf9_GbfwA1IwduWLrg-zxYuANXx-xgcq/exec";
 
-    /********************************************************
-     * 2) State / Storage
-     ********************************************************/
     const STORAGE_KEYS = {
       token: "iqcToken",
       user: "iqcUser",
@@ -722,53 +448,33 @@
     };
 
     let currentUser = null;
-    let qcMasterData = {
-      catalog: [],
-      items: [],
-      components: [],
-      loaded: false
-    };
+    let qcMasterData = { catalog: [], items: [], components: [], loaded: false };
 
     const $ = (id) => document.getElementById(id);
 
-    /********************************************************
-     * 3) API helper สำหรับเรียก Apps Script
-     ********************************************************/
     async function api(action, payload = {}) {
-      if (!WEB_APP_URL || WEB_APP_URL === "PASTE_YOUR_WEB_APP_URL_HERE") {
-        throw new Error("ยังไม่ได้ใส่ WEB_APP_URL ในไฟล์ index.html");
-      }
-
       const response = await fetch(WEB_APP_URL, {
         method: "POST",
-        headers: {
-          "Content-Type": "text/plain;charset=utf-8"
-        },
-        body: JSON.stringify({
-          action,
-          ...payload
-        })
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify({ action, ...payload })
       });
 
       const text = await response.text();
-
       try {
         return JSON.parse(text);
       } catch (err) {
         console.error("Raw response:", text);
-        throw new Error("อ่านคำตอบจาก Apps Script ไม่ได้ อาจยังไม่ได้ Deploy เป็น Web app หรือ URL ไม่ถูกต้อง");
+        throw new Error("อ่านคำตอบจาก Apps Script ไม่ได้ กรุณาเช็ก Deploy Web app");
       }
     }
 
-    function getToken() {
-      return localStorage.getItem(STORAGE_KEYS.token) || "";
-    }
+    function getToken() { return localStorage.getItem(STORAGE_KEYS.token) || ""; }
 
     function saveAuth(result) {
-      localStorage.setItem(STORAGE_KEYS.token, result.token);
-      localStorage.setItem(STORAGE_KEYS.user, JSON.stringify(result.user));
+      localStorage.setItem(STORAGE_KEYS.token, result.token || "");
+      localStorage.setItem(STORAGE_KEYS.user, JSON.stringify(result.user || {}));
       localStorage.setItem(STORAGE_KEYS.expiresAt, result.expiresAt || "");
-      currentUser = result.user;
+      currentUser = result.user || {};
     }
 
     function clearAuth() {
@@ -781,20 +487,43 @@
     function loadUserFromStorage() {
       const rawUser = localStorage.getItem(STORAGE_KEYS.user);
       if (!rawUser) return null;
-
-      try {
-        return JSON.parse(rawUser);
-      } catch (err) {
-        clearAuth();
-        return null;
-      }
+      try { return JSON.parse(rawUser); } catch (err) { clearAuth(); return null; }
     }
 
-    /********************************************************
-     * 4) Login / Logout / Session
-     ********************************************************/
+    function showMessage(elementId, text, type, hide = false) {
+      const box = $(elementId);
+      if (!box) return;
+      box.className = "message";
+      if (hide || !text) {
+        box.classList.add("hidden");
+        box.textContent = "";
+        return;
+      }
+      box.classList.add(type === "success" ? "success" : "error");
+      box.textContent = text;
+    }
+
+    function showLogin() {
+      const loginView = $("loginView");
+      const appView = $("appView");
+      if (loginView) loginView.classList.remove("hidden");
+      if (appView) appView.classList.add("hidden");
+      const pin = $("pinInput");
+      if (pin) pin.value = "";
+      const username = $("usernameInput");
+      if (username) username.focus();
+    }
+
+    function showApp() {
+      $("loginView").classList.add("hidden");
+      $("appView").classList.remove("hidden");
+    }
+
     async function handleLogin(event) {
-      event.preventDefault();
+      if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
 
       const username = $("usernameInput").value.trim();
       const pin = $("pinInput").value.trim();
@@ -804,22 +533,17 @@
 
       if (!username || !pin) {
         showMessage("loginMessage", "กรุณากรอก username และรหัสเข้าใช้งาน", "error");
-        return;
+        return false;
       }
 
       loginBtn.disabled = true;
       loginBtn.textContent = "กำลังเข้าสู่ระบบ...";
 
       try {
-        const result = await api("login", {
-          username,
-          pin,
-          userAgent: navigator.userAgent
-        });
-
+        const result = await api("login", { username, pin, userAgent: navigator.userAgent });
         if (!result.ok) {
           showMessage("loginMessage", result.message || "เข้าสู่ระบบไม่สำเร็จ", "error");
-          return;
+          return false;
         }
 
         saveAuth(result);
@@ -827,67 +551,64 @@
         renderUserBox();
         applyRoleMenus();
         showPage("dashboardPage");
+        return false;
       } catch (err) {
-        showMessage("loginMessage", err.message, "error");
+        showMessage("loginMessage", err.message || String(err), "error");
+        return false;
       } finally {
         loginBtn.disabled = false;
         loginBtn.textContent = "เข้าสู่ระบบ";
       }
     }
 
-    async function handleLogout() {
+    async function handleLogout(event) {
+      if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+
       const token = getToken();
+      clearAuth();
+      showLogin();
 
       try {
         if (token) {
-          await api("logout", {
-            token,
-            userAgent: navigator.userAgent
-          });
+          await api("logout", { token, userAgent: navigator.userAgent });
         }
       } catch (err) {
-        console.warn("Logout API warning:", err.message);
+        console.warn("Logout API warning:", err.message || err);
       }
 
-      clearAuth();
-      showLogin();
+      return false;
     }
 
     async function refreshMe() {
       const token = getToken();
-
-      if (!token) {
-        showLogin();
-        return;
-      }
+      if (!token) { showLogin(); return; }
 
       showMessage("sessionMessage", "กำลังตรวจ session...", "success");
 
       try {
         const result = await api("me", { token });
-
         if (!result.ok) {
           clearAuth();
           showLogin();
           return;
         }
-
         currentUser = result.user;
         localStorage.setItem(STORAGE_KEYS.user, JSON.stringify(result.user));
         localStorage.setItem(STORAGE_KEYS.expiresAt, result.expiresAt || "");
         renderUserBox();
         applyRoleMenus();
-        showMessage("sessionMessage", "Session ใช้งานได้: " + result.user.fullName, "success");
+        showMessage("sessionMessage", "Session ใช้งานได้: " + (result.user.fullName || result.user.username), "success");
       } catch (err) {
-        clearAuth();
-        showLogin();
+        showMessage("sessionMessage", err.message || String(err), "error");
       }
     }
 
     async function boot() {
       const token = getToken();
       const storedUser = loadUserFromStorage();
-
       if (!token || !storedUser) {
         showLogin();
         return;
@@ -902,7 +623,6 @@
       try {
         const result = await api("me", { token });
         if (!result.ok) throw new Error(result.message || "session invalid");
-
         currentUser = result.user;
         localStorage.setItem(STORAGE_KEYS.user, JSON.stringify(result.user));
         localStorage.setItem(STORAGE_KEYS.expiresAt, result.expiresAt || "");
@@ -914,83 +634,48 @@
       }
     }
 
-    /********************************************************
-     * 5) UI helpers
-     ********************************************************/
-    function showLogin() {
-      $("loginView").classList.remove("hidden");
-      $("appView").classList.add("hidden");
-      $("usernameInput").focus();
-    }
-
-    function showApp() {
-      $("loginView").classList.add("hidden");
-      $("appView").classList.remove("hidden");
-    }
-
-    function showMessage(elementId, text, type, hide = false) {
-      const box = $(elementId);
-      box.className = "message";
-
-      if (hide || !text) {
-        box.classList.add("hidden");
-        box.textContent = "";
-        return;
-      }
-
-      box.classList.add(type === "success" ? "success" : "error");
-      box.textContent = text;
-    }
-
     function renderUserBox() {
       const user = currentUser || loadUserFromStorage();
       if (!user) return;
-
       $("userFullName").textContent = user.fullName || user.username || "-";
       $("userMeta").innerHTML = [
         "Username: " + safeText(user.username || "-"),
         "Role: " + safeText(user.role || "-"),
         "Position: " + safeText(user.position || "-"),
         "Approval: " + safeText(user.approvalLevel || "-"),
-        "Final: " + safeText(String(user.canFinalApprove || "FALSE"))
+        "Final: " + safeText(String(user.canFinalApprove || false))
       ].join("<br>");
     }
 
     function applyRoleMenus() {
       const user = currentUser || loadUserFromStorage();
-      const role = (user?.role || "").toLowerCase();
-
+      const role = String(user?.role || "").toLowerCase();
       document.querySelectorAll(".menu-btn[data-roles]").forEach((btn) => {
         const allowedRoles = btn.dataset.roles.split(",").map((x) => x.trim().toLowerCase());
-        const allowed = allowedRoles.includes(role);
-
-        btn.classList.toggle("hidden", !allowed);
-        btn.classList.toggle("locked", !allowed);
+        btn.classList.toggle("hidden", !allowedRoles.includes(role));
       });
     }
 
     function showPage(pageId) {
       document.querySelectorAll(".page").forEach((page) => page.classList.add("hidden"));
-      $(pageId).classList.remove("hidden");
+      const page = $(pageId);
+      if (page) page.classList.remove("hidden");
 
       document.querySelectorAll(".menu-btn").forEach((btn) => {
         btn.classList.toggle("active", btn.dataset.page === pageId);
       });
 
-      $("sidebar").classList.remove("open");
+      const sidebar = $("sidebar");
+      if (sidebar) sidebar.classList.remove("open");
 
       if (pageId === "iqcEntryPage" && !qcMasterData.loaded) {
         loadQCMasterData(false);
       }
     }
 
-    /********************************************************
-     * 5.1) QC Master Data
-     ********************************************************/
     async function loadQCMasterData(forceReload = false) {
       const token = getToken();
       if (!token) return;
-
       if (qcMasterData.loaded && !forceReload) {
         renderQCMasterDropdowns();
         return;
@@ -1000,7 +685,6 @@
 
       try {
         const result = await api("getQCMasterData", { token });
-
         if (!result.ok) {
           showMessage("qcSelectedInfo", result.message || "โหลด Master ไม่สำเร็จ", "error");
           return;
@@ -1016,18 +700,17 @@
         renderQCMasterDropdowns();
         showMessage("qcSelectedInfo", "โหลด Master สำเร็จ", "success");
       } catch (err) {
-        showMessage("qcSelectedInfo", err.message, "error");
+        showMessage("qcSelectedInfo", err.message || String(err), "error");
       }
     }
 
     function renderQCMasterDropdowns() {
-      const groups = uniqueValues(qcMasterData.catalog.map((item) => item.qcGroup).filter(Boolean));
+      const groups = uniqueValues(qcMasterData.catalog.map((item) => item.qcGroup));
       fillSelect("qcGroupSelect", groups.map((group) => ({ value: group, label: group })), "เลือกกลุ่ม QC");
       fillSelect("qcCatalogSelect", [], "กรุณาเลือกกลุ่ม QC ก่อน");
       fillSelect("qcItemSelect", [], "กรุณาเลือกรายการ QC ก่อน");
       fillSelect("componentProductSelect", [], "เลือกผลิตภัณฑ์");
       fillSelect("componentPreparationSelect", [], "เลือกชนิดถุง / วิธีเตรียม");
-
       $("qcItemBox").classList.add("hidden");
       $("componentBox").classList.add("hidden");
       $("qcTriggerText").value = "";
@@ -1036,16 +719,7 @@
     function handleQCGroupChange() {
       const group = $("qcGroupSelect").value;
       const catalogList = qcMasterData.catalog.filter((item) => item.qcGroup === group);
-
-      fillSelect(
-        "qcCatalogSelect",
-        catalogList.map((item) => ({
-          value: item.qcId,
-          label: item.qcName
-        })),
-        "เลือกรายการ QC"
-      );
-
+      fillSelect("qcCatalogSelect", catalogList.map((item) => ({ value: item.qcId, label: item.qcName })), "เลือกรายการ QC");
       $("qcItemBox").classList.add("hidden");
       $("componentBox").classList.add("hidden");
       $("qcTriggerText").value = "";
@@ -1055,47 +729,28 @@
     function handleQCCatalogChange() {
       const qcId = $("qcCatalogSelect").value;
       const selected = qcMasterData.catalog.find((item) => item.qcId === qcId);
-
       $("qcItemBox").classList.add("hidden");
       $("componentBox").classList.add("hidden");
       $("qcTriggerText").value = selected?.trigger || "";
-
-      if (!selected) {
-        showMessage("qcSelectedInfo", "", "", true);
-        return;
-      }
+      if (!selected) { showMessage("qcSelectedInfo", "", "", true); return; }
 
       if (selected.qcGroup === "Blood Component QC") {
         renderComponentSelectors();
       } else {
         renderItemSelector(qcId);
       }
-
       showSelectedQCSummary();
     }
 
     function renderItemSelector(qcId) {
       const itemList = qcMasterData.items.filter((item) => item.qcId === qcId);
-
-      if (!itemList.length) {
-        $("qcItemBox").classList.add("hidden");
-        return;
-      }
-
-      fillSelect(
-        "qcItemSelect",
-        itemList.map((item) => ({
-          value: item.itemId,
-          label: buildItemLabel(item)
-        })),
-        "เลือกรายการย่อย"
-      );
-
+      if (!itemList.length) { $("qcItemBox").classList.add("hidden"); return; }
+      fillSelect("qcItemSelect", itemList.map((item) => ({ value: item.itemId, label: buildItemLabel(item) })), "เลือกรายการย่อย");
       $("qcItemBox").classList.remove("hidden");
     }
 
     function renderComponentSelectors() {
-      const productTypes = uniqueValues(qcMasterData.components.map((item) => item.productType).filter(Boolean));
+      const productTypes = uniqueValues(qcMasterData.components.map((item) => item.productType));
       fillSelect("componentProductSelect", productTypes.map((x) => ({ value: x, label: x })), "เลือกผลิตภัณฑ์");
       fillSelect("componentPreparationSelect", [], "เลือกชนิดถุง / วิธีเตรียม");
       $("componentBox").classList.remove("hidden");
@@ -1104,16 +759,7 @@
     function handleComponentProductChange() {
       const productType = $("componentProductSelect").value;
       const list = qcMasterData.components.filter((item) => item.productType === productType);
-
-      fillSelect(
-        "componentPreparationSelect",
-        list.map((item) => ({
-          value: item.componentId,
-          label: item.preparationType + " — " + item.displayName
-        })),
-        "เลือกชนิดถุง / วิธีเตรียม"
-      );
-
+      fillSelect("componentPreparationSelect", list.map((item) => ({ value: item.componentId, label: item.preparationType + " — " + item.displayName })), "เลือกชนิดถุง / วิธีเตรียม");
       showSelectedQCSummary();
     }
 
@@ -1139,26 +785,20 @@
       } else {
         const itemId = $("qcItemSelect").value;
         const item = qcMasterData.items.find((x) => x.itemId === itemId);
-        if (item) {
-          lines.push("รายการย่อย: " + buildItemLabel(item));
-        }
+        if (item) lines.push("รายการย่อย: " + buildItemLabel(item));
       }
 
-      showMessage("qcSelectedInfo", lines.join("
-"), "success");
+      showMessage("qcSelectedInfo", lines.join("\n"), "success");
     }
 
     function fillSelect(selectId, options, placeholder) {
       const select = $(selectId);
       if (!select) return;
-
       select.innerHTML = "";
-
       const first = document.createElement("option");
       first.value = "";
       first.textContent = placeholder || "เลือก";
       select.appendChild(first);
-
       options.forEach((option) => {
         const el = document.createElement("option");
         el.value = option.value;
@@ -1187,235 +827,36 @@
         .replaceAll("'", "&#039;");
     }
 
-    /********************************************************
-     * 6) Event binding
-     ********************************************************/
     function bind(id, eventName, handler) {
       const el = $(id);
-      if (!el) {
-        console.warn("ไม่พบ element id:", id);
-        return;
-      }
+      if (!el) return;
       el.addEventListener(eventName, handler);
     }
 
-    bind("loginForm", "submit", handleLogin);
-    bind("qcGroupSelect", "change", handleQCGroupChange);
-    bind("qcCatalogSelect", "change", handleQCCatalogChange);
-    bind("qcItemSelect", "change", showSelectedQCSummary);
-    bind("componentProductSelect", "change", handleComponentProductChange);
-    bind("componentPreparationSelect", "change", showSelectedQCSummary);
-    bind("logoutBtn", "click", handleLogout);
-    bind("topLogoutBtn", "click", handleLogout);
-    bind("openMenuBtn", "click", () => {
-      const sidebar = $("sidebar");
-      if (sidebar) sidebar.classList.toggle("open");
-    });
+    document.addEventListener("DOMContentLoaded", () => {
+      bind("loginForm", "submit", handleLogin);
+      bind("loginBtn", "click", handleLogin);
+      bind("logoutBtn", "click", handleLogout);
+      bind("topLogoutBtn", "click", handleLogout);
+      bind("checkSessionBtn", "click", refreshMe);
+      bind("reloadMasterBtn", "click", () => loadQCMasterData(true));
+      bind("qcGroupSelect", "change", handleQCGroupChange);
+      bind("qcCatalogSelect", "change", handleQCCatalogChange);
+      bind("qcItemSelect", "change", showSelectedQCSummary);
+      bind("componentProductSelect", "change", handleComponentProductChange);
+      bind("componentPreparationSelect", "change", showSelectedQCSummary);
+      bind("openMenuBtn", "click", () => $("sidebar").classList.toggle("open"));
 
-    document.querySelectorAll(".menu-btn[data-page]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        if (btn.classList.contains("locked")) return;
-        showPage(btn.dataset.page);
+      document.querySelectorAll(".menu-btn[data-page]").forEach((btn) => {
+        btn.addEventListener("click", () => showPage(btn.dataset.page));
       });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") $("sidebar").classList.remove("open");
+      });
+
+      boot();
     });
-
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape") {
-        const sidebar = $("sidebar");
-        if (sidebar) sidebar.classList.remove("open");
-      }
-    });
-
-    boot();
-  </script>
-  <script>
-    /********************************************************
-     * EMERGENCY LOGIN FALLBACK
-     * ใช้กันฟอร์มเด้ง URL และกันกรณี event binding หลุด
-     ********************************************************/
-    (function () {
-      const FALLBACK_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx1mGA3zXlUdWcCQkWqf_UPTbr4S1evnNhkjf9_GbfwA1IwduWLrg-zxYuANXx-xgcq/exec";
-
-      function el(id) {
-        return document.getElementById(id);
-      }
-
-      function fallbackMessage(text, type) {
-        const box = el("loginMessage");
-        if (!box) return;
-        box.className = "message " + (type || "error");
-        box.textContent = text || "";
-        box.classList.toggle("hidden", !text);
-      }
-
-      function renderFallbackUserBox(user) {
-        const nameBox = el("userFullName");
-        const metaBox = el("userMeta");
-        if (nameBox) nameBox.textContent = user.fullName || user.username || "-";
-        if (metaBox) {
-          metaBox.innerHTML = [
-            "Username: " + (user.username || "-"),
-            "Role: " + (user.role || "-"),
-            "Position: " + (user.position || "-"),
-            "Approval: " + (user.approvalLevel || "-"),
-            "Final: " + String(user.canFinalApprove || false)
-          ].join("<br>");
-        }
-      }
-
-      async function fallbackLogin(event) {
-        if (event) {
-          event.preventDefault();
-          event.stopPropagation();
-        }
-
-        const usernameInput = el("usernameInput");
-        const pinInput = el("pinInput");
-        const btn = el("loginBtn");
-
-        const username = usernameInput ? usernameInput.value.trim() : "";
-        const pin = pinInput ? pinInput.value.trim() : "";
-
-        if (!username || !pin) {
-          fallbackMessage("กรุณากรอก username และรหัสเข้าใช้งาน", "error");
-          return false;
-        }
-
-        if (btn) {
-          btn.disabled = true;
-          btn.textContent = "กำลังเข้าสู่ระบบ...";
-        }
-
-        try {
-          const res = await fetch(FALLBACK_WEB_APP_URL, {
-            method: "POST",
-            headers: {
-              "Content-Type": "text/plain;charset=utf-8"
-            },
-            body: JSON.stringify({
-              action: "login",
-              username: username,
-              pin: pin,
-              userAgent: navigator.userAgent
-            })
-          });
-
-          const text = await res.text();
-          let result;
-
-          try {
-            result = JSON.parse(text);
-          } catch (jsonErr) {
-            console.error("Raw Apps Script response:", text);
-            throw new Error("Apps Script ตอบกลับไม่ใช่ JSON กรุณาเช็ก Deploy Web app");
-          }
-
-          if (!result.ok) {
-            fallbackMessage(result.message || "เข้าสู่ระบบไม่สำเร็จ", "error");
-            return false;
-          }
-
-          localStorage.setItem("iqcToken", result.token);
-          localStorage.setItem("iqcUser", JSON.stringify(result.user));
-          localStorage.setItem("iqcExpiresAt", result.expiresAt || "");
-
-          const loginView = el("loginView");
-          const appView = el("appView");
-          if (loginView) loginView.classList.add("hidden");
-          if (appView) appView.classList.remove("hidden");
-          renderFallbackUserBox(result.user || {});
-          fallbackMessage("", "success");
-          return false;
-        } catch (err) {
-          fallbackMessage(err.message || String(err), "error");
-          return false;
-        } finally {
-          if (btn) {
-            btn.disabled = false;
-            btn.textContent = "เข้าสู่ระบบ";
-          }
-        }
-      }
-
-      const form = el("loginForm");
-      const btn = el("loginBtn");
-
-      if (form) {
-        form.setAttribute("onsubmit", "return false;");
-        form.addEventListener("submit", fallbackLogin, true);
-      }
-
-      if (btn) {
-        btn.setAttribute("type", "button");
-        btn.addEventListener("click", fallbackLogin, true);
-      }
-    })();
-  </script>
-  <script>
-    /********************************************************
-     * EMERGENCY LOGOUT FALLBACK
-     * กันกรณี event binding หลักหลุด ทำให้กดออกจากระบบไม่ได้
-     ********************************************************/
-    window.emergencyLogout = async function (event) {
-      if (event) {
-        event.preventDefault();
-        event.stopPropagation();
-      }
-
-      const token = localStorage.getItem("iqcToken") || "";
-      const WEB_APP = typeof WEB_APP_URL !== "undefined"
-        ? WEB_APP_URL
-        : "https://script.google.com/macros/s/AKfycbx1mGA3zXlUdWcCQkWqf_UPTbr4S1evnNhkjf9_GbfwA1IwduWLrg-zxYuANXx-xgcq/exec";
-
-      // ล้างฝั่ง browser ก่อนเสมอ เพื่อให้ผู้ใช้หลุดออกทันที
-      localStorage.removeItem("iqcToken");
-      localStorage.removeItem("iqcUser");
-      localStorage.removeItem("iqcExpiresAt");
-
-      const loginView = document.getElementById("loginView");
-      const appView = document.getElementById("appView");
-      const usernameInput = document.getElementById("usernameInput");
-      const pinInput = document.getElementById("pinInput");
-
-      if (appView) appView.classList.add("hidden");
-      if (loginView) loginView.classList.remove("hidden");
-      if (pinInput) pinInput.value = "";
-      if (usernameInput) usernameInput.focus();
-
-      // แจ้ง Apps Script ทีหลัง ถ้าล้มเหลวก็ไม่ควรขวางการออกจากระบบ
-      try {
-        if (token) {
-          await fetch(WEB_APP, {
-            method: "POST",
-            headers: { "Content-Type": "text/plain;charset=utf-8" },
-            body: JSON.stringify({
-              action: "logout",
-              token: token,
-              userAgent: navigator.userAgent
-            })
-          });
-        }
-      } catch (err) {
-        console.warn("Logout API warning:", err);
-      }
-
-      return false;
-    };
-
-    setTimeout(function () {
-      const logoutBtn = document.getElementById("logoutBtn");
-      const topLogoutBtn = document.getElementById("topLogoutBtn");
-
-      if (logoutBtn) {
-        logoutBtn.setAttribute("type", "button");
-        logoutBtn.onclick = window.emergencyLogout;
-      }
-
-      if (topLogoutBtn) {
-        topLogoutBtn.setAttribute("type", "button");
-        topLogoutBtn.onclick = window.emergencyLogout;
-      }
-    }, 0);
   </script>
 </body>
 </html>
