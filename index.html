@@ -3,1775 +3,956 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <title>IQC Blood Bank</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
   <style>
     :root {
-      --bg: #eef5fb;
+      --primary: #4f46e5;
+      --primary-dark: #4338ca;
+      --bg: #f4f6fb;
       --card: #ffffff;
-      --primary: #2563eb;
-      --primary-dark: #1d4ed8;
-      --text: #172033;
-      --muted: #64748b;
-      --line: #dbe4ee;
-      --success: #15803d;
-      --warning: #b45309;
-      --danger: #b91c1c;
-      --soft-blue: #e0efff;
-      --soft-red: #fee2e2;
-      --soft-green: #dcfce7;
-      --shadow: 0 14px 35px rgba(15, 23, 42, 0.10);
-      --radius: 18px;
+      --sidebar: #111827;
+      --sidebar-soft: #1f2937;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --danger: #dc2626;
+      --success: #16a34a;
+      --warning: #f59e0b;
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: linear-gradient(135deg, #edf6ff 0%, #f8fbff 45%, #eaf2ff 100%);
+      font-family: "Kanit", sans-serif;
+      background: var(--bg);
       color: var(--text);
-      min-height: 100vh;
     }
 
-    button, input, select, textarea { font-family: inherit; }
-    .hidden { display: none !important; }
+    button,
+    input {
+      font-family: inherit;
+    }
 
-    .login-shell {
+    .hidden {
+      display: none !important;
+    }
+
+    /* LOGIN */
+    .login-page {
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 22px;
+      padding: 24px;
+      background:
+        radial-gradient(circle at top left, #dbeafe 0, transparent 32%),
+        radial-gradient(circle at bottom right, #ede9fe 0, transparent 34%),
+        #f8fafc;
     }
 
     .login-card {
-      width: min(440px, 100%);
-      background: rgba(255, 255, 255, 0.95);
-      border: 1px solid var(--line);
-      border-radius: 24px;
-      box-shadow: var(--shadow);
-      padding: 28px;
+      width: 100%;
+      max-width: 460px;
+      background: rgba(255, 255, 255, 0.96);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      border-radius: 28px;
+      padding: 34px;
+      box-shadow: 0 24px 60px rgba(15, 23, 42, 0.14);
     }
 
-    .brand, .sidebar-head {
-      display: flex;
-      gap: 14px;
-      align-items: center;
-      margin-bottom: 24px;
-    }
-
-    .brand-mark {
-      width: 52px;
-      height: 52px;
-      border-radius: 18px;
-      background: linear-gradient(135deg, #2563eb, #38bdf8);
+    .login-logo {
+      width: 82px;
+      height: 82px;
+      margin: 0 auto 18px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), #7c3aed);
       color: white;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 800;
-      font-size: 20px;
-      box-shadow: 0 10px 22px rgba(37, 99, 235, 0.25);
-      flex: 0 0 auto;
+      font-size: 38px;
+      box-shadow: 0 18px 36px rgba(79, 70, 229, 0.28);
     }
 
-    .brand h1, .sidebar-title h2 { margin: 0; font-size: 22px; line-height: 1.2; }
-    .brand p, .sidebar-title p { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
-    .sidebar-title h2 { font-size: 18px; }
-    .sidebar-title p { font-size: 12px; }
-
-    .field { margin-bottom: 16px; }
-    .field label { display: block; font-weight: 700; font-size: 14px; margin-bottom: 7px; }
-
-    .field input, .field select, .field textarea {
-      width: 100%;
-      border: 1px solid var(--line);
-      background: #fff;
-      border-radius: 14px;
-      padding: 13px 14px;
-      font-size: 16px;
-      outline: none;
-      transition: 0.18s ease;
+    .login-title {
+      margin: 0;
+      text-align: center;
+      font-size: 28px;
+      font-weight: 700;
     }
 
-    .field input:focus, .field select:focus, .field textarea:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
-    }
-
-    .pin-mask { -webkit-text-security: disc; text-security: disc; }
-
-    .btn {
-      border: 0;
-      border-radius: 14px;
-      padding: 12px 16px;
-      font-weight: 800;
-      cursor: pointer;
-      transition: 0.18s ease;
+    .login-subtitle {
+      margin: 8px 0 28px;
+      text-align: center;
+      color: var(--muted);
       font-size: 15px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
+      line-height: 1.6;
     }
 
-    .btn:disabled { opacity: 0.55; cursor: not-allowed; }
-    .btn-primary { background: var(--primary); color: white; }
-    .btn-primary:hover:not(:disabled) { background: var(--primary-dark); transform: translateY(-1px); }
-    .btn-light { background: #f1f5f9; color: var(--text); border: 1px solid var(--line); }
-    .btn-danger { background: #fee2e2; color: var(--danger); border: 1px solid #fecaca; }
-    .btn-full { width: 100%; }
-
-    .message {
-      margin-top: 14px;
-      padding: 12px 14px;
-      border-radius: 14px;
-      font-size: 14px;
-      line-height: 1.45;
-      white-space: pre-line;
-    }
-
-    .message.error { background: var(--soft-red); color: var(--danger); border: 1px solid #fecaca; }
-    .message.success { background: var(--soft-green); color: var(--success); border: 1px solid #bbf7d0; }
-
-    .app-shell { display: grid; grid-template-columns: 280px 1fr; min-height: 100vh; }
-
-    .sidebar {
-      background: rgba(255, 255, 255, 0.88);
-      border-right: 1px solid var(--line);
-      padding: 18px;
-      position: sticky;
-      top: 0;
-      height: 100vh;
-      overflow-y: auto;
-    }
-
-    .user-box {
-      background: var(--soft-blue);
-      border: 1px solid #bfdbfe;
-      border-radius: var(--radius);
-      padding: 14px;
+    .form-group {
       margin-bottom: 16px;
     }
 
-    .user-name { font-weight: 800; margin-bottom: 4px; }
-    .user-meta { color: var(--muted); font-size: 13px; line-height: 1.45; }
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: #374151;
+    }
 
-    .menu { display: flex; flex-direction: column; gap: 8px; margin: 16px 0; }
-
-    .menu-btn {
+    .form-control {
       width: 100%;
-      border: 1px solid transparent;
-      background: transparent;
-      color: var(--text);
-      text-align: left;
-      padding: 12px 13px;
+      border: 1px solid var(--border);
+      border-radius: 15px;
+      padding: 13px 14px;
+      font-size: 16px;
+      outline: none;
+      background: #fff;
+    }
+
+    .form-control:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.12);
+    }
+
+    .btn {
+      border: none;
+      cursor: pointer;
       border-radius: 14px;
-      cursor: pointer;
-      font-weight: 700;
-      transition: 0.18s ease;
+      padding: 12px 16px;
+      font-size: 15px;
+      font-weight: 600;
+      transition: 0.15s ease;
     }
 
-    .menu-btn:hover { background: #f1f5f9; }
-    .menu-btn.active { background: var(--primary); color: white; box-shadow: 0 8px 18px rgba(37, 99, 235, 0.22); }
+    .btn-primary {
+      width: 100%;
+      color: #fff;
+      background: linear-gradient(135deg, var(--primary), #7c3aed);
+      box-shadow: 0 12px 24px rgba(79, 70, 229, 0.24);
+    }
 
-    .main { padding: 26px; min-width: 0; }
+    .btn-primary:hover {
+      transform: translateY(-1px);
+    }
 
-    .topbar {
-      display: none;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      background: rgba(255, 255, 255, 0.95);
-      border-bottom: 1px solid var(--line);
+    .btn-primary:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .alert {
+      margin-top: 16px;
       padding: 12px 14px;
-      position: sticky;
+      border-radius: 14px;
+      font-size: 14px;
+      display: none;
+    }
+
+    .alert-danger {
+      color: #991b1b;
+      background: #fee2e2;
+      border: 1px solid #fecaca;
+    }
+
+    .alert-success {
+      color: #166534;
+      background: #dcfce7;
+      border: 1px solid #bbf7d0;
+    }
+
+    /* APP LAYOUT */
+    .app {
+      min-height: 100vh;
+      display: flex;
+      background: var(--bg);
+    }
+
+    .sidebar {
+      width: 292px;
+      min-height: 100vh;
+      background: var(--sidebar);
+      color: #e5e7eb;
+      position: fixed;
+      left: 0;
       top: 0;
-      z-index: 10;
+      bottom: 0;
+      display: flex;
+      flex-direction: column;
+      transition: width 0.2s ease, transform 0.2s ease;
+      z-index: 30;
     }
 
-    .mobile-menu-btn {
-      border: 1px solid var(--line);
-      background: white;
-      border-radius: 12px;
-      padding: 9px 12px;
-      font-weight: 800;
-      cursor: pointer;
+    .sidebar.collapsed {
+      width: 82px;
     }
 
-    .page { max-width: 1180px; margin: 0 auto; }
-    .page-header { margin-bottom: 18px; display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
-    .page-header h2 { margin: 0; font-size: 26px; }
-    .page-header p { margin: 6px 0 0; color: var(--muted); }
-
-    .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
-
-    .card {
-      background: rgba(255, 255, 255, 0.94);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
-      padding: 18px;
+    .sidebar-header {
+      height: 74px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
 
-    .card h3 { margin: 0 0 8px; font-size: 18px; }
-    .card p { margin: 0; color: var(--muted); line-height: 1.5; }
-
-    .status-pill {
-      display: inline-flex;
+    .brand-icon {
+      min-width: 42px;
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--primary), #7c3aed);
+      display: flex;
       align-items: center;
       justify-content: center;
-      border-radius: 999px;
-      padding: 5px 10px;
-      font-weight: 800;
-      font-size: 12px;
-      margin-top: 12px;
+      color: #fff;
+      font-size: 22px;
     }
 
-    .status-pending { background: #fef3c7; color: var(--warning); }
-    .status-empty { background: #e2e8f0; color: #475569; }
+    .brand-text {
+      overflow: hidden;
+      white-space: nowrap;
+    }
 
-    .form-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
-    .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); background: white; }
-    table { width: 100%; border-collapse: collapse; min-width: 760px; }
-    th, td { border-bottom: 1px solid var(--line); padding: 12px; text-align: left; font-size: 14px; }
-    th { background: #f8fafc; font-weight: 800; }
-    tr:last-child td { border-bottom: 0; }
-    .empty-state { text-align: center; padding: 34px 18px; color: var(--muted); }
-    .muted { color: var(--muted); }
+    .brand-title {
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    .brand-subtitle {
+      font-size: 12px;
+      color: #9ca3af;
+      margin-top: 3px;
+    }
+
+    .sidebar.collapsed .brand-text,
+    .sidebar.collapsed .menu-text,
+    .sidebar.collapsed .submenu,
+    .sidebar.collapsed .menu-arrow,
+    .sidebar.collapsed .user-info {
+      display: none;
+    }
+
+    .sidebar-body {
+      flex: 1;
+      padding: 12px;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
+
+    .menu-item,
+    .menu-toggle,
+    .submenu-item {
+      width: 100%;
+      color: #d1d5db;
+      background: transparent;
+      border: 0;
+      text-align: left;
+      padding: 11px 12px;
+      border-radius: 13px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      font-size: 14px;
+      text-decoration: none;
+    }
+
+    .menu-item:hover,
+    .menu-toggle:hover,
+    .submenu-item:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+    }
+
+    .menu-item.active,
+    .submenu-item.active {
+      background: rgba(79, 70, 229, 0.28);
+      color: #fff;
+    }
+
+    .menu-icon {
+      min-width: 22px;
+      font-size: 18px;
+      text-align: center;
+    }
+
+    .menu-arrow {
+      margin-left: auto;
+      transition: 0.16s ease;
+      font-size: 12px;
+    }
+
+    .menu-toggle.open .menu-arrow {
+      transform: rotate(90deg);
+    }
+
+    .submenu {
+      margin: 4px 0 8px 34px;
+      padding-left: 10px;
+      border-left: 1px solid rgba(255, 255, 255, 0.12);
+      display: none;
+    }
+
+    .submenu.open {
+      display: block;
+    }
+
+    .submenu-item {
+      font-size: 13px;
+      padding: 9px 10px;
+      color: #cbd5e1;
+    }
+
+    .sidebar-footer {
+      padding: 14px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .user-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .avatar {
+      min-width: 38px;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #374151;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .user-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: #fff;
+      line-height: 1.2;
+    }
+
+    .user-role {
+      font-size: 12px;
+      color: #9ca3af;
+      margin-top: 2px;
+    }
+
+    .btn-logout {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.08);
+      color: #e5e7eb;
+    }
+
+    .btn-logout:hover {
+      background: rgba(255, 255, 255, 0.14);
+    }
+
+    .main {
+      flex: 1;
+      margin-left: 292px;
+      transition: margin-left 0.2s ease;
+      min-width: 0;
+    }
+
+    .main.collapsed {
+      margin-left: 82px;
+    }
+
+    .topbar {
+      height: 74px;
+      background: rgba(255, 255, 255, 0.86);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 22px;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .icon-button {
+      border: 1px solid var(--border);
+      background: #fff;
+      color: #374151;
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      cursor: pointer;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .page-title {
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .page-subtitle {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .content {
+      padding: 24px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 22px;
+      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.05);
+      margin-bottom: 18px;
+    }
+
+    .card-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .card-text {
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      background: #eef2ff;
+      color: #4338ca;
+    }
+
+    .mobile-overlay {
+      display: none;
+    }
 
     @media (max-width: 900px) {
-      .topbar { display: flex; }
-      .app-shell { display: block; }
       .sidebar {
-        position: fixed;
-        z-index: 30;
-        inset: 0 auto 0 0;
-        width: min(82vw, 320px);
-        transform: translateX(-105%);
-        transition: transform 0.22s ease;
-        box-shadow: var(--shadow);
+        transform: translateX(-100%);
+        width: 292px;
       }
-      .sidebar.open { transform: translateX(0); }
-      .main { padding: 18px; }
-      .grid { grid-template-columns: 1fr; }
-      .page-header { display: block; }
-      .form-row { grid-template-columns: 1fr; }
+
+      .sidebar.mobile-open {
+        transform: translateX(0);
+      }
+
+      .sidebar.collapsed {
+        width: 292px;
+      }
+
+      .main,
+      .main.collapsed {
+        margin-left: 0;
+      }
+
+      .mobile-overlay.show {
+        display: block;
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.42);
+        z-index: 25;
+      }
+
+      .content {
+        padding: 18px;
+      }
+
+      .page-title {
+        font-size: 19px;
+      }
+
+      .topbar {
+        padding: 0 14px;
+      }
     }
   </style>
 </head>
+
 <body>
-  <section id="loginView" class="login-shell">
+  <!-- LOGIN PAGE -->
+  <section id="loginPage" class="login-page">
     <div class="login-card">
-      <div class="brand">
-        <div class="brand-mark">IQC</div>
-        <div>
-          <h1>IQC Blood Bank</h1>
-          <p>ระบบบันทึก Internal Quality Control</p>
+      <div class="login-logo">
+        <i class="bi bi-droplet-half"></i>
+      </div>
+
+      <h1 class="login-title">IQC Blood Bank</h1>
+      <p class="login-subtitle">
+        ระบบบันทึก Internal Quality Control<br>
+        Blood Bank & Blood Donation Unit
+      </p>
+
+      <form id="loginForm">
+        <div class="form-group">
+          <label class="form-label" for="username">Username / รหัสพนักงาน</label>
+          <input id="username" class="form-control" type="text" autocomplete="username" placeholder="เช่น 020305">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="pin">PIN</label>
+          <input id="pin" class="form-control" type="password" autocomplete="current-password" placeholder="ใส่ PIN">
+        </div>
+
+        <button id="loginBtn" class="btn btn-primary" type="submit">
+          <i class="bi bi-box-arrow-in-right"></i>
+          เข้าสู่ระบบ
+        </button>
+
+        <div id="loginAlert" class="alert alert-danger"></div>
+      </form>
+    </div>
+  </section>
+
+  <!-- APP PAGE -->
+  <section id="appPage" class="app hidden">
+    <div id="mobileOverlay" class="mobile-overlay"></div>
+
+    <aside id="sidebar" class="sidebar">
+      <div class="sidebar-header">
+        <div class="brand-icon">
+          <i class="bi bi-droplet-half"></i>
+        </div>
+        <div class="brand-text">
+          <div class="brand-title">IQC Blood Bank</div>
+          <div class="brand-subtitle">CNMI Laboratory</div>
         </div>
       </div>
 
-      <form id="loginForm" autocomplete="off" onsubmit="return false;">
-        <div class="field">
-          <label for="usernameInput">Username / รหัสผู้ใช้</label>
-          <input id="usernameInput" type="text" name="iqc_user" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="เช่น staff01" required />
+      <div class="sidebar-body">
+        <button class="menu-item active" data-page="dashboard">
+          <i class="bi bi-speedometer2 menu-icon"></i>
+          <span class="menu-text">Dashboard</span>
+        </button>
+
+        <button class="menu-toggle">
+          <i class="bi bi-pencil-square menu-icon"></i>
+          <span class="menu-text">บันทึก IQC</span>
+          <i class="bi bi-chevron-right menu-arrow"></i>
+        </button>
+        <div class="submenu">
+          <button class="submenu-item" data-page="daily-qc">Daily QC</button>
+          <button class="submenu-item" data-page="test-dependent-qc">Test-dependent QC</button>
+          <button class="submenu-item" data-page="calibration">Calibration</button>
+          <button class="submenu-item" data-page="weekly-component-qc">Weekly Component QC</button>
         </div>
 
-        <div class="field">
-          <label for="pinInput">รหัสเข้าใช้งาน</label>
-          <input id="pinInput" class="pin-mask" type="text" name="iqc_pin_code" inputmode="numeric" autocomplete="off" autocapitalize="off" spellcheck="false" data-lpignore="true" data-1p-ignore="true" placeholder="กรอกรหัสเข้าใช้งาน" required />
+        <button class="menu-toggle">
+          <i class="bi bi-exclamation-triangle menu-icon"></i>
+          <span class="menu-text">บันทึกแก้ไข IQC ไม่ผ่าน</span>
+          <i class="bi bi-chevron-right menu-arrow"></i>
+        </button>
+        <div class="submenu">
+          <button class="submenu-item" data-page="fail-daily-qc">Daily QC</button>
+          <button class="submenu-item" data-page="fail-test-dependent-qc">Test-dependent QC</button>
+          <button class="submenu-item" data-page="fail-calibration">Calibration</button>
+          <button class="submenu-item" data-page="fail-weekly-component-qc">Weekly Component QC</button>
         </div>
 
-        <button id="loginBtn" class="btn btn-primary btn-full" type="button">เข้าสู่ระบบ</button>
-      </form>
-
-      <div id="loginMessage" class="message hidden"></div>
-    </div>
-  </section>
-
-  <section id="appView" class="hidden">
-    <div class="topbar">
-      <button id="openMenuBtn" class="mobile-menu-btn" type="button">☰ เมนู</button>
-      <strong>IQC Blood Bank</strong>
-      <button id="topLogoutBtn" class="btn btn-danger" type="button">Logout</button>
-    </div>
-
-    <div class="app-shell">
-      <aside id="sidebar" class="sidebar">
-        <div class="sidebar-head">
-          <div class="brand-mark">IQC</div>
-          <div class="sidebar-title">
-            <h2>IQC Blood Bank</h2>
-            <p>คลังเลือด + บริจาคโลหิต</p>
-          </div>
+        <button class="menu-toggle">
+          <i class="bi bi-sliders menu-icon"></i>
+          <span class="menu-text">ตั้งค่า Expected</span>
+          <i class="bi bi-chevron-right menu-arrow"></i>
+        </button>
+        <div class="submenu">
+          <button class="submenu-item" data-page="expected-matrix">Expected Matrix</button>
+          <button class="submenu-item" data-page="component-list">Component List</button>
         </div>
 
+        <button class="menu-toggle">
+          <i class="bi bi-clock-history menu-icon"></i>
+          <span class="menu-text">ดูย้อนหลัง</span>
+          <i class="bi bi-chevron-right menu-arrow"></i>
+        </button>
+        <div class="submenu">
+          <button class="submenu-item" data-page="history-record">ประวัติการบันทึก IQC</button>
+          <button class="submenu-item" data-page="history-fail-action">ประวัติการแก้ไข IQC ไม่ผ่าน</button>
+          <button class="submenu-item" data-page="audit-log">Audit Log</button>
+        </div>
+
+        <button class="menu-toggle">
+          <i class="bi bi-check2-square menu-icon"></i>
+          <span class="menu-text">Reviewer</span>
+          <i class="bi bi-chevron-right menu-arrow"></i>
+        </button>
+        <div class="submenu">
+          <button class="submenu-item" data-page="review-pending">รอตรวจสอบ</button>
+          <button class="submenu-item" data-page="monthly-summary">Monthly Summary</button>
+          <button class="submenu-item" data-page="final-approve">Final Approve</button>
+        </div>
+
+        <button class="menu-toggle">
+          <i class="bi bi-gear menu-icon"></i>
+          <span class="menu-text">ตั้งค่าระบบ</span>
+          <i class="bi bi-chevron-right menu-arrow"></i>
+        </button>
+        <div class="submenu">
+          <button class="submenu-item" data-page="users">Users</button>
+          <button class="submenu-item" data-page="qc-catalog">QC Catalog</button>
+        </div>
+      </div>
+
+      <div class="sidebar-footer">
         <div class="user-box">
-          <div id="userFullName" class="user-name">-</div>
-          <div id="userMeta" class="user-meta">-</div>
+          <div class="avatar">
+            <i class="bi bi-person"></i>
+          </div>
+          <div class="user-info">
+            <div id="sideUserName" class="user-name">-</div>
+            <div id="sideUserRole" class="user-role">-</div>
+          </div>
         </div>
 
-        <nav class="menu">
-          <button class="menu-btn active" type="button" data-page="dashboardPage" onclick="showPage('dashboardPage')">Dashboard</button>
-          <button class="menu-btn" type="button" data-page="iqcEntryPage" onclick="showPage('iqcEntryPage')">บันทึก IQC</button>
-          <button class="menu-btn" type="button" data-page="lotSetupPage" data-roles="admin,manager,sup_manager,physician,staff" onclick="showPage('lotSetupPage')">ตั้งค่า Lot / Expected</button>
-          <button class="menu-btn" type="button" data-page="historyPage" onclick="showPage('historyPage')">ดูย้อนหลัง</button>
-          <button class="menu-btn" type="button" data-page="reviewPage" data-roles="admin,manager,sup_manager,physician" onclick="showPage('reviewPage')">Reviewer</button>
-        </nav>
+        <button id="logoutBtn" class="btn btn-logout">
+          <i class="bi bi-box-arrow-left"></i>
+          <span class="menu-text">ออกจากระบบ</span>
+        </button>
+      </div>
+    </aside>
 
-        <button id="logoutBtn" class="btn btn-danger btn-full" type="button">ออกจากระบบ</button>
-      </aside>
-
-      <main class="main">
-        <section id="dashboardPage" class="page">
-          <div class="page-header">
-            <div>
-              <h2>Dashboard</h2>
-              <p>ภาพรวม IQC วันนี้ และเมนูหลักของระบบ</p>
-            </div>
-            <button id="checkSessionBtn" class="btn btn-light" type="button" onclick="refreshMe()">ตรวจ session</button>
+    <main id="main" class="main">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button id="sidebarToggle" class="icon-button" type="button">
+            <i class="bi bi-list"></i>
+          </button>
+          <div>
+            <div id="pageTitle" class="page-title">Dashboard</div>
+            <div id="pageSubtitle" class="page-subtitle">ภาพรวมระบบบันทึก IQC</div>
           </div>
+        </div>
 
-          <div class="grid">
-            <div class="card">
-              <h3>น้ำยาที่ใช้ประจำวัน</h3>
-              <p>บันทึก QC น้ำยาคลังเลือด/บริจาคโลหิต</p>
-              <span class="status-pill status-empty">ยังไม่เชื่อมข้อมูล</span>
-            </div>
-            <div class="card">
-              <h3>IH-500 / Ortho Vision Max</h3>
-              <p>บันทึกผลตาม Lot และ Expected Matrix</p>
-              <span class="status-pill status-pending">รอทำ Phase ถัดไป</span>
-            </div>
-            <div class="card">
-              <h3>Review</h3>
-              <p>ตรวจสอบและรับรองผล IQC</p>
-              <span class="status-pill status-empty">ใช้ตามสิทธิ์</span>
-            </div>
+        <span id="topRoleBadge" class="badge">-</span>
+      </header>
+
+      <section id="content" class="content">
+        <div class="card">
+          <div class="card-title">Dashboard</div>
+          <div class="card-text">
+            เข้าสู่ระบบสำเร็จแล้ว หน้านี้เป็นโครงเริ่มต้นสำหรับ IQC Blood Bank
           </div>
-          <div id="sessionMessage" class="message hidden"></div>
-        </section>
-
-        <section id="iqcEntryPage" class="page hidden">
-          <div class="page-header">
-            <div>
-              <h2>บันทึก IQC</h2>
-              <p>เลือกประเภท QC จาก Master Sheet แล้วระบบจะแสดงรายการย่อยที่เกี่ยวข้อง</p>
-            </div>
-            <button id="reloadMasterBtn" class="btn btn-light" type="button" onclick="loadQCMasterData(true)">โหลด Master ใหม่</button>
-          </div>
-
-          <div class="card">
-            <div class="form-row">
-              <div class="field">
-                <label>กลุ่ม QC</label>
-                <select id="qcGroupSelect"><option value="">ยังไม่ได้โหลดข้อมูล</option></select>
-              </div>
-              <div class="field">
-                <label>รายการ QC</label>
-                <select id="qcCatalogSelect"><option value="">กรุณาเลือกกลุ่ม QC ก่อน</option></select>
-              </div>
-            </div>
-
-            <div id="qcItemBox" class="form-row hidden">
-              <div class="field">
-                <label>รายการย่อย / เครื่อง / การทดสอบ</label>
-                <select id="qcItemSelect"></select>
-              </div>
-              <div class="field">
-                <label>Trigger</label>
-                <input id="qcTriggerText" type="text" disabled />
-              </div>
-            </div>
-
-            <div id="componentBox" class="form-row hidden">
-              <div class="field">
-                <label>ผลิตภัณฑ์</label>
-                <select id="componentProductSelect"></select>
-              </div>
-              <div class="field">
-                <label>ชนิดถุง / วิธีเตรียม</label>
-                <select id="componentPreparationSelect"></select>
-              </div>
-            </div>
-
-            <div id="qcSelectedInfo" class="message hidden"></div>
-            <p class="muted">ขั้นนี้เป็นการดึง Master จาก Google Sheets จริงก่อน ขั้นต่อไปจะสร้างฟอร์มบันทึกตามรายการที่เลือก</p>
-          </div>
-        </section>
-
-        <section id="lotSetupPage" class="page hidden">
-          <div class="page-header">
-            <div>
-              <h2>ตั้งค่า Lot / Expected</h2>
-              <p>เพิ่ม Lot น้ำยา / Cell / Panel / Control และเก็บผู้แก้ไขลง Audit Log</p>
-            </div>
-            <button id="reloadLotMasterBtn" class="btn btn-light" type="button" onclick="loadLotSetupMasterData(true)">โหลด Master ใหม่</button>
-          </div>
-
-          <div class="card">
-            <div class="form-row">
-              <div class="field">
-                <label>กลุ่ม QC</label>
-                <select id="lotQcGroupSelect" onchange="handleLotQCGroupChange()">
-                  <option value="">ยังไม่ได้โหลดข้อมูล</option>
-                </select>
-              </div>
-
-              <div class="field">
-                <label>รายการ QC</label>
-                <select id="lotQcCatalogSelect" onchange="handleLotQCCatalogChange()">
-                  <option value="">กรุณาเลือกกลุ่ม QC ก่อน</option>
-                </select>
-              </div>
-            </div>
-
-            <div id="lotItemBox" class="form-row hidden">
-              <div class="field">
-                <label>รายการย่อย / เครื่อง / การทดสอบ</label>
-                <select id="lotItemSelect" onchange="renderExistingLotDropdown()"></select>
-              </div>
-
-              <div class="field">
-                <label>Lot Type</label>
-                <select id="lotTypeSelect">
-                  <option value="reagent">reagent</option>
-                  <option value="cell">cell</option>
-                  <option value="panel">panel</option>
-                  <option value="control">control</option>
-                  <option value="qc_material">qc_material</option>
-                  <option value="calibrator">calibrator</option>
-                </select>
-              </div>
-            </div>
-
-            <div id="lotComponentBox" class="form-row hidden">
-              <div class="field">
-                <label>ผลิตภัณฑ์</label>
-                <select id="lotComponentProductSelect" onchange="handleLotComponentProductChange()"></select>
-              </div>
-
-              <div class="field">
-                <label>ชนิดถุง / วิธีเตรียม</label>
-                <select id="lotComponentSelect" onchange="renderExistingLotDropdown()"></select>
-              </div>
-            </div>
-
-            <div class="form-row">
-              <div class="field">
-                <label>Lot No.</label>
-                <input id="lotNoInput" type="text" placeholder="เช่น 69040, 8SS966, QC-Low-001" />
-              </div>
-
-              <div class="field">
-                <label>วันหมดอายุ</label>
-                <input id="lotExpDateInput" type="date" />
-              </div>
-            </div>
-
-            <div class="form-row">
-              <div class="field">
-                <label>วันที่เริ่มใช้</label>
-                <input id="lotStartDateInput" type="date" />
-              </div>
-
-              <div class="field">
-                <label>สถานะ</label>
-                <select id="lotStatusSelect">
-                  <option value="active">active</option>
-                  <option value="inactive">inactive</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="field">
-              <label>หมายเหตุ</label>
-              <textarea id="lotNoteInput" rows="3" placeholder="เช่น เปลี่ยน Lot ใหม่ / เปิดใช้งาน QC ขวดใหม่"></textarea>
-            </div>
-
-            <button id="saveLotHeaderBtn" class="btn btn-primary" type="button" onclick="saveLotHeaderFromForm()">บันทึก Lot</button>
-
-            <div id="lotSetupMessage" class="message hidden"></div>
-
-            <hr style="border:0; border-top:1px solid var(--line); margin:22px 0;">
-
-            <div class="form-row">
-              <div class="field">
-                <label>Lot ที่มีอยู่</label>
-                <select id="existingLotSelect" onchange="handleExistingLotChange()">
-                  <option value="">กรุณาเลือกรายการ QC ก่อน</option>
-                </select>
-              </div>
-
-              <div class="field">
-                <label>ข้อมูล Lot ที่เลือก</label>
-                <input id="existingLotInfoText" type="text" disabled placeholder="เลือก Lot เพื่อดูข้อมูล" />
-                  </div>
-                </div>
-
-                <div id="expectedSetupBox" class="hidden">
-                  <hr style="border:0; border-top:1px solid var(--line); margin:22px 0;">
-
-                  <h3>Expected result ของ Lot ที่เลือก</h3>
-                  <p class="muted">เพิ่มหรือแก้ Expected ทีละช่อง ระบบจะบันทึก Audit Log ทุกครั้ง</p>
-
-                  <div class="form-row">
-                    <div class="field">
-                      <label>Expected ที่มีอยู่</label>
-                      <select id="existingExpectedSelect" onchange="handleExistingExpectedChange()">
-                        <option value="">เลือก Lot ก่อน</option>
-                      </select>
-                    </div>
-
-                    <div class="field">
-                      <label>ข้อมูล Expected ที่เลือก</label>
-                      <input id="existingExpectedInfoText" type="text" disabled placeholder="เลือก Expected เพื่อดูข้อมูล" />
-                    </div>
-                  </div>
-
-                  <div class="form-row">
-                    <div class="field">
-                      <label>Sample ID</label>
-                      <input id="expectedSampleIdInput" type="text" placeholder="เช่น QC Sample 1, Anti-A, A cells" />
-                    </div>
-
-                    <div class="field">
-                      <label>Section</label>
-                      <input id="expectedSectionInput" type="text" placeholder="เช่น ABO grouping, Antibody Screening" />
-                    </div>
-                  </div>
-
-                  <div class="form-row">
-                    <div class="field">
-                      <label>Field Key</label>
-                      <input id="expectedFieldKeyInput" type="text" placeholder="เช่น antiA, antiB, o1, ahg" />
-                    </div>
-
-                    <div class="field">
-                      <label>Field Name</label>
-                      <input id="expectedFieldNameInput" type="text" placeholder="เช่น Anti-A, O1, AHG" />
-                    </div>
-                  </div>
-
-                  <div class="form-row">
-                    <div class="field">
-                      <label>Expected Value</label>
-                      <input id="expectedValueInput" type="text" placeholder="เช่น 0, 0.5+-4+, 3+-4+, Positive" />
-                    </div>
-
-                    <div class="field">
-                      <label>Acceptable Values</label>
-                      <input id="acceptableValuesInput" type="text" placeholder="เช่น 3+-4+ หรือ 0.5+-4+" />
-                    </div>
-                  </div>
-
-                  <div class="form-row">
-                    <div class="field">
-                      <label>Result Type</label>
-                      <select id="expectedResultTypeSelect">
-                        <option value="reaction">reaction</option>
-                        <option value="text">text</option>
-                        <option value="number">number</option>
-                        <option value="pass_fail">pass_fail</option>
-                      </select>
-                    </div>
-
-                    <div class="field">
-                      <label>Sort Order</label>
-                      <input id="expectedSortOrderInput" type="number" placeholder="เช่น 1" />
-                    </div>
-                  </div>
-
-                  <div class="form-row">
-                    <div class="field">
-                      <label>Status</label>
-                      <select id="expectedStatusSelect">
-                        <option value="active">active</option>
-                        <option value="inactive">inactive</option>
-                      </select>
-                    </div>
-
-                    <div class="field">
-                      <label>หมายเหตุ Expected</label>
-                      <input id="expectedNoteInput" type="text" placeholder="เช่น ค่าอ้างอิงจาก package insert" />
-                    </div>
-                  </div>
-
-                  <button id="saveExpectedBtn" class="btn btn-primary" type="button" onclick="saveExpectedFromForm()">บันทึก Expected</button>
-                  <button class="btn btn-light" type="button" onclick="startNewExpectedRow()">เพิ่ม Expected ใหม่</button>
-                </div>
-          </div>
-        </section>
-
-        <section id="historyPage" class="page hidden">
-          <div class="page-header">
-            <div>
-              <h2>ดูย้อนหลัง</h2>
-              <p>ค้นหาประวัติ IQC ตามวันที่ เครื่อง ผู้บันทึก หรือผลผ่าน/ไม่ผ่าน</p>
-            </div>
-          </div>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>วันที่</th><th>รายการ</th><th>เครื่อง</th><th>ผู้บันทึก</th><th>ผล</th></tr></thead>
-              <tbody><tr><td colspan="5" class="empty-state">ยังไม่ได้เชื่อมข้อมูลประวัติ</td></tr></tbody>
-            </table>
-          </div>
-        </section>
-
-        <section id="reviewPage" class="page hidden">
-          <div class="page-header">
-            <div>
-              <h2>Reviewer</h2>
-              <p>ตรวจสอบผล IQC และรับรองผล</p>
-            </div>
-          </div>
-          <div class="card"><p class="muted">เฉพาะ role manager/physician/admin จะเห็นและเข้าเมนูนี้ได้</p></div>
-        </section>
-      </main>
-    </div>
+        </div>
+      </section>
+    </main>
   </section>
 
   <script>
-    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbx1mGA3zXlUdWcCQkWqf_UPTbr4S1evnNhkjf9_GbfwA1IwduWLrg-zxYuANXx-xgcq/exec";
-
-    const STORAGE_KEYS = {
-      token: "iqcToken",
-      user: "iqcUser",
-      expiresAt: "iqcExpiresAt"
-    };
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxHjKSW7CXVU18SJ_trWd9XTp5gKUfi2Lu3DUC7LqzFyV7QZgcdWdOV7imj9x0FPDVr/exec";
 
     let currentUser = null;
-    let qcMasterData = { catalog: [], items: [], components: [], loaded: false };
-    let lotSetupData = { lots: [], expected: [], loaded: false };
-    let currentEditingLotId = "";
-    let currentEditingExpectedId = "";
+    let currentToken = localStorage.getItem("IQC_TOKEN") || "";
 
-    const $ = (id) => document.getElementById(id);
+    const pageInfo = {
+      "dashboard": ["Dashboard", "ภาพรวมระบบบันทึก IQC"],
 
-    async function api(action, payload = {}) {
-      const response = await fetch(WEB_APP_URL, {
-        method: "POST",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify({ action, ...payload })
+      "daily-qc": ["Daily QC", "บันทึก IQC ประจำวัน"],
+      "test-dependent-qc": ["Test-dependent QC", "บันทึก IQC ตามรายการทดสอบ"],
+      "calibration": ["Calibration", "บันทึกการ Calibrate"],
+      "weekly-component-qc": ["Weekly Component QC", "บันทึก QC ส่วนประกอบโลหิตรายสัปดาห์"],
+
+      "fail-daily-qc": ["แก้ไข IQC ไม่ผ่าน: Daily QC", "บันทึกการดำเนินการเมื่อ IQC ไม่ผ่านรอบแรก"],
+      "fail-test-dependent-qc": ["แก้ไข IQC ไม่ผ่าน: Test-dependent QC", "บันทึกการดำเนินการเมื่อ IQC ไม่ผ่านรอบแรก"],
+      "fail-calibration": ["แก้ไข IQC ไม่ผ่าน: Calibration", "บันทึกการดำเนินการเมื่อ IQC ไม่ผ่านรอบแรก"],
+      "fail-weekly-component-qc": ["แก้ไข IQC ไม่ผ่าน: Weekly Component QC", "บันทึกการดำเนินการเมื่อ IQC ไม่ผ่านรอบแรก"],
+
+      "expected-matrix": ["Expected Matrix", "ตั้งค่าผล Expected ตาม Lot / Panel Cell"],
+      "component-list": ["Component List", "ตั้งค่ารายการส่วนประกอบโลหิต"],
+
+      "history-record": ["ประวัติการบันทึก IQC", "ค้นหาและดูย้อนหลังรายการบันทึก IQC"],
+      "history-fail-action": ["ประวัติการแก้ไข IQC ไม่ผ่าน", "ดูประวัติ Action และผลหลังแก้ไข"],
+      "audit-log": ["Audit Log", "ประวัติการใช้งานและการเปลี่ยนแปลงในระบบ"],
+
+      "review-pending": ["รอตรวจสอบ", "รายการที่รอ Reviewer ตรวจสอบ"],
+      "monthly-summary": ["Monthly Summary", "สรุป IQC รายเดือน"],
+      "final-approve": ["Final Approve", "อนุมัติขั้นสุดท้าย"],
+
+      "users": ["Users", "จัดการผู้ใช้งานและเปลี่ยนรหัส"],
+      "qc-catalog": ["QC Catalog", "ตั้งค่ารายการ IQC ในระบบ"]
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+      setupEvents();
+
+      if (currentToken) {
+        checkSession();
+      }
+    });
+
+    function setupEvents() {
+      document.getElementById("loginForm").addEventListener("submit", handleLogin);
+      document.getElementById("logoutBtn").addEventListener("click", handleLogout);
+      document.getElementById("sidebarToggle").addEventListener("click", toggleSidebar);
+      document.getElementById("mobileOverlay").addEventListener("click", closeMobileSidebar);
+
+      document.querySelectorAll(".menu-toggle").forEach(btn => {
+        btn.addEventListener("click", () => {
+          btn.classList.toggle("open");
+          const submenu = btn.nextElementSibling;
+          if (submenu) submenu.classList.toggle("open");
+        });
       });
 
-      const text = await response.text();
-      try {
-        return JSON.parse(text);
-      } catch (err) {
-        console.error("Raw response:", text);
-        throw new Error("อ่านคำตอบจาก Apps Script ไม่ได้ กรุณาเช็ก Deploy Web app");
-      }
-    }
-
-    function getToken() { return localStorage.getItem(STORAGE_KEYS.token) || ""; }
-
-    function saveAuth(result) {
-      localStorage.setItem(STORAGE_KEYS.token, result.token || "");
-      localStorage.setItem(STORAGE_KEYS.user, JSON.stringify(result.user || {}));
-      localStorage.setItem(STORAGE_KEYS.expiresAt, result.expiresAt || "");
-      currentUser = result.user || {};
-    }
-
-    function clearAuth() {
-      localStorage.removeItem(STORAGE_KEYS.token);
-      localStorage.removeItem(STORAGE_KEYS.user);
-      localStorage.removeItem(STORAGE_KEYS.expiresAt);
-      currentUser = null;
-    }
-
-    function loadUserFromStorage() {
-      const rawUser = localStorage.getItem(STORAGE_KEYS.user);
-      if (!rawUser) return null;
-      try { return JSON.parse(rawUser); } catch (err) { clearAuth(); return null; }
-    }
-
-    function showMessage(elementId, text, type, hide = false) {
-      const box = $(elementId);
-      if (!box) return;
-      box.className = "message";
-      if (hide || !text) {
-        box.classList.add("hidden");
-        box.textContent = "";
-        return;
-      }
-      box.classList.add(type === "success" ? "success" : "error");
-      box.textContent = text;
-    }
-
-    function showLogin() {
-      const loginView = $("loginView");
-      const appView = $("appView");
-      if (loginView) loginView.classList.remove("hidden");
-      if (appView) appView.classList.add("hidden");
-      const pin = $("pinInput");
-      if (pin) pin.value = "";
-      const username = $("usernameInput");
-      if (username) username.focus();
-    }
-
-    function showApp() {
-      $("loginView").classList.add("hidden");
-      $("appView").classList.remove("hidden");
+      document.querySelectorAll("[data-page]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          setActiveMenu(btn);
+          showPage(btn.dataset.page);
+          closeMobileSidebar();
+        });
+      });
     }
 
     async function handleLogin(event) {
-      if (event) {
-        event.preventDefault();
-        event.stopPropagation();
-      }
+      event.preventDefault();
 
-      const username = $("usernameInput").value.trim();
-      const pin = $("pinInput").value.trim();
-      const loginBtn = $("loginBtn");
+      const username = document.getElementById("username").value.trim();
+      const pin = document.getElementById("pin").value.trim();
+      const loginBtn = document.getElementById("loginBtn");
 
-      showMessage("loginMessage", "", "", true);
+      hideLoginAlert();
 
       if (!username || !pin) {
-        showMessage("loginMessage", "กรุณากรอก username และรหัสเข้าใช้งาน", "error");
-        return false;
+        showLoginAlert("กรุณากรอก Username และ PIN");
+        return;
       }
 
       loginBtn.disabled = true;
-      loginBtn.textContent = "กำลังเข้าสู่ระบบ...";
+      loginBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> กำลังเข้าสู่ระบบ...';
 
       try {
-        const result = await api("login", { username, pin, userAgent: navigator.userAgent });
-        if (!result.ok) {
-          showMessage("loginMessage", result.message || "เข้าสู่ระบบไม่สำเร็จ", "error");
-          return false;
+        const url = WEB_APP_URL
+          + "?action=login"
+          + "&username=" + encodeURIComponent(username)
+          + "&pin=" + encodeURIComponent(pin);
+
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (!data.ok) {
+          showLoginAlert(data.message || "เข้าสู่ระบบไม่สำเร็จ");
+          return;
         }
 
-        saveAuth(result);
+        currentUser = data.user;
+        currentToken = data.token;
+        localStorage.setItem("IQC_TOKEN", currentToken);
+
         showApp();
-        renderUserBox();
-        applyRoleMenus();
-        showPage("dashboardPage");
-        return false;
+
       } catch (err) {
-        showMessage("loginMessage", err.message || String(err), "error");
-        return false;
+        showLoginAlert("เชื่อมต่อระบบไม่ได้: " + err.message);
       } finally {
         loginBtn.disabled = false;
-        loginBtn.textContent = "เข้าสู่ระบบ";
+        loginBtn.innerHTML = '<i class="bi bi-box-arrow-in-right"></i> เข้าสู่ระบบ';
       }
     }
 
-    async function handleLogout(event) {
-      if (event) {
-        event.preventDefault();
-        event.stopPropagation();
-      }
-
-      const token = getToken();
-      clearAuth();
-      showLogin();
-
+    async function checkSession() {
       try {
-        if (token) {
-          await api("logout", { token, userAgent: navigator.userAgent });
+        const url = WEB_APP_URL
+          + "?action=me"
+          + "&token=" + encodeURIComponent(currentToken);
+
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (data.ok) {
+          currentUser = data.user;
+          showApp();
+        } else {
+          localStorage.removeItem("IQC_TOKEN");
+          currentToken = "";
         }
       } catch (err) {
-        console.warn("Logout API warning:", err.message || err);
+        localStorage.removeItem("IQC_TOKEN");
+        currentToken = "";
       }
-
-      return false;
     }
 
-    async function refreshMe() {
-      const token = getToken();
-      if (!token) { showLogin(); return; }
-
-      showMessage("sessionMessage", "กำลังตรวจ session...", "success");
-
+    async function handleLogout() {
       try {
-        const result = await api("me", { token });
-        if (!result.ok) {
-          clearAuth();
-          showLogin();
-          return;
+        if (currentToken) {
+          const url = WEB_APP_URL
+            + "?action=logout"
+            + "&token=" + encodeURIComponent(currentToken);
+
+          await fetch(url);
         }
-        currentUser = result.user;
-        localStorage.setItem(STORAGE_KEYS.user, JSON.stringify(result.user));
-        localStorage.setItem(STORAGE_KEYS.expiresAt, result.expiresAt || "");
-        renderUserBox();
-        applyRoleMenus();
-        showMessage("sessionMessage", "Session ใช้งานได้: " + (result.user.fullName || result.user.username), "success");
       } catch (err) {
-        showMessage("sessionMessage", err.message || String(err), "error");
-      }
-    }
-
-    async function boot() {
-      const token = getToken();
-      const storedUser = loadUserFromStorage();
-      if (!token || !storedUser) {
-        showLogin();
-        return;
+        console.log(err);
       }
 
-      currentUser = storedUser;
-      showApp();
-      renderUserBox();
-      applyRoleMenus();
-      showPage("dashboardPage");
+      currentUser = null;
+      currentToken = "";
+      localStorage.removeItem("IQC_TOKEN");
 
-      try {
-        const result = await api("me", { token });
-        if (!result.ok) throw new Error(result.message || "session invalid");
-        currentUser = result.user;
-        localStorage.setItem(STORAGE_KEYS.user, JSON.stringify(result.user));
-        localStorage.setItem(STORAGE_KEYS.expiresAt, result.expiresAt || "");
-        renderUserBox();
-        applyRoleMenus();
-      } catch (err) {
-        clearAuth();
-        showLogin();
-      }
+      document.getElementById("appPage").classList.add("hidden");
+      document.getElementById("loginPage").classList.remove("hidden");
     }
 
-    function renderUserBox() {
-      const user = currentUser || loadUserFromStorage();
-      if (!user) return;
-      $("userFullName").textContent = user.fullName || user.username || "-";
-      $("userMeta").innerHTML = [
-        "Username: " + safeText(user.username || "-"),
-        "Role: " + safeText(user.role || "-"),
-        "Position: " + safeText(user.position || "-"),
-        "Approval: " + safeText(user.approvalLevel || "-"),
-        "Final: " + safeText(String(user.canFinalApprove || false))
-      ].join("<br>");
+    function showApp() {
+      document.getElementById("loginPage").classList.add("hidden");
+      document.getElementById("appPage").classList.remove("hidden");
+
+      document.getElementById("sideUserName").textContent = currentUser.fullName || currentUser.username || "-";
+      document.getElementById("sideUserRole").textContent = currentUser.role || "-";
+      document.getElementById("topRoleBadge").textContent = currentUser.role || "-";
+
+      applyRoleMenu();
+      showPage("dashboard");
     }
 
-    function applyRoleMenus() {
-      const user = currentUser || loadUserFromStorage();
-      const role = String(user?.role || "").toLowerCase();
-      document.querySelectorAll(".menu-btn[data-roles]").forEach((btn) => {
-        const allowedRoles = btn.dataset.roles.split(",").map((x) => x.trim().toLowerCase());
-        btn.classList.toggle("hidden", !allowedRoles.includes(role));
-      });
-    }
-
-    function showPage(pageId) {
-      document.querySelectorAll(".page").forEach((page) => page.classList.add("hidden"));
-      const page = $(pageId);
-      if (page) page.classList.remove("hidden");
-
-      document.querySelectorAll(".menu-btn").forEach((btn) => {
-        btn.classList.toggle("active", btn.dataset.page === pageId);
-      });
-
-      const sidebar = $("sidebar");
-      if (sidebar) sidebar.classList.remove("open");
-
-      if (pageId === "iqcEntryPage" && !qcMasterData.loaded) {
-        loadQCMasterData(false);
-      }
-
-      if (pageId === "lotSetupPage") {
-        loadLotSetupMasterData(false);
-      }
-    }
-
-    async function loadQCMasterData(forceReload = false) {
-      const token = getToken();
-      if (!token) return;
-      if (qcMasterData.loaded && lotSetupData.loaded && !forceReload) {
-        renderLotSetupDropdowns();
-        renderExistingLotDropdown();
-        return;
-      }
-
-      showMessage("qcSelectedInfo", "กำลังโหลดข้อมูล Master จาก Google Sheets...", "success");
-
-      try {
-        const result = await api("getQCMasterData", { token });
-        if (!result.ok) {
-          showMessage("qcSelectedInfo", result.message || "โหลด Master ไม่สำเร็จ", "error");
-          return;
-        }
-
-        const returnedLotHeaders = Array.isArray(result.lotHeaders)
-  ? result.lotHeaders
-  : (Array.isArray(result.lots) ? result.lots : []);
-
-const returnedLotExpected = Array.isArray(result.lotExpected)
-  ? result.lotExpected
-  : (Array.isArray(result.expected) ? result.expected : []);
-
-qcMasterData = {
-  catalog: Array.isArray(result.catalog) ? result.catalog : [],
-  items: Array.isArray(result.items) ? result.items : [],
-  components: Array.isArray(result.components) ? result.components : [],
-  lotHeaders: returnedLotHeaders,
-  lots: returnedLotHeaders,
-  lotExpected: returnedLotExpected,
-  expected: returnedLotExpected,
-  loaded: true
-};
-
-        const lotResult = await api("getLotSetupData", { token });
-
-        if (!lotResult.ok) {
-          showMessage("lotSetupMessage", lotResult.message || "โหลด Lot เดิมไม่สำเร็จ", "error");
-          return;
-        }
-
-        lotSetupData = {
-          lots: Array.isArray(lotResult.lots) ? lotResult.lots : [],
-          expected: Array.isArray(lotResult.expected) ? lotResult.expected : [],
-          loaded: true
-        };
-
-        renderLotSetupDropdowns();
-        renderExistingLotDropdown();
-        showMessage("lotSetupMessage", "โหลด Master และ Lot เดิมสำเร็จ", "success");
-        
-      } catch (err) {
-        showMessage("qcSelectedInfo", err.message || String(err), "error");
-      }
-    }
-
-    function renderQCMasterDropdowns() {
-      const groups = uniqueValues(qcMasterData.catalog.map((item) => item.qcGroup));
-      fillSelect("qcGroupSelect", groups.map((group) => ({ value: group, label: group })), "เลือกกลุ่ม QC");
-      fillSelect("qcCatalogSelect", [], "กรุณาเลือกกลุ่ม QC ก่อน");
-      fillSelect("qcItemSelect", [], "กรุณาเลือกรายการ QC ก่อน");
-      fillSelect("componentProductSelect", [], "เลือกผลิตภัณฑ์");
-      fillSelect("componentPreparationSelect", [], "เลือกชนิดถุง / วิธีเตรียม");
-      $("qcItemBox").classList.add("hidden");
-      $("componentBox").classList.add("hidden");
-      $("qcTriggerText").value = "";
-    }
-
-    function handleQCGroupChange() {
-      const group = $("qcGroupSelect").value;
-      const catalogList = qcMasterData.catalog.filter((item) => item.qcGroup === group);
-      fillSelect("qcCatalogSelect", catalogList.map((item) => ({ value: item.qcId, label: item.qcName })), "เลือกรายการ QC");
-      $("qcItemBox").classList.add("hidden");
-      $("componentBox").classList.add("hidden");
-      $("qcTriggerText").value = "";
-      showMessage("qcSelectedInfo", "", "", true);
-    }
-
-    function handleQCCatalogChange() {
-      const qcId = $("qcCatalogSelect").value;
-      const selected = qcMasterData.catalog.find((item) => item.qcId === qcId);
-      $("qcItemBox").classList.add("hidden");
-      $("componentBox").classList.add("hidden");
-      $("qcTriggerText").value = selected?.trigger || "";
-      if (!selected) { showMessage("qcSelectedInfo", "", "", true); return; }
-
-      if (selected.qcGroup === "Blood Component QC") {
-        renderComponentSelectors();
-      } else {
-        renderItemSelector(qcId);
-      }
-      showSelectedQCSummary();
-    }
-
-    function renderItemSelector(qcId) {
-      const itemList = qcMasterData.items.filter((item) => item.qcId === qcId);
-      if (!itemList.length) { $("qcItemBox").classList.add("hidden"); return; }
-      fillSelect("qcItemSelect", itemList.map((item) => ({ value: item.itemId, label: buildItemLabel(item) })), "เลือกรายการย่อย");
-      $("qcItemBox").classList.remove("hidden");
-    }
-
-    function renderComponentSelectors() {
-      const productTypes = uniqueValues(qcMasterData.components.map((item) => item.productType));
-      fillSelect("componentProductSelect", productTypes.map((x) => ({ value: x, label: x })), "เลือกผลิตภัณฑ์");
-      fillSelect("componentPreparationSelect", [], "เลือกชนิดถุง / วิธีเตรียม");
-      $("componentBox").classList.remove("hidden");
-    }
-
-    function handleComponentProductChange() {
-      const productType = $("componentProductSelect").value;
-      const list = qcMasterData.components.filter((item) => item.productType === productType);
-      fillSelect("componentPreparationSelect", list.map((item) => ({ value: item.componentId, label: item.preparationType + " — " + item.displayName })), "เลือกชนิดถุง / วิธีเตรียม");
-      showSelectedQCSummary();
-    }
-
-    function showSelectedQCSummary() {
-      const qcId = $("qcCatalogSelect").value;
-      const selected = qcMasterData.catalog.find((item) => item.qcId === qcId);
-      if (!selected) return;
-
-      const lines = [
-        "เลือก: " + (selected.qcName || "-"),
-        "กลุ่ม: " + (selected.qcGroup || "-"),
-        "Trigger: " + (selected.trigger || "-"),
-        "Monthly Summary: " + String(selected.hasMonthlySummary || "-")
-      ];
-
-      if (selected.qcGroup === "Blood Component QC") {
-        const componentId = $("componentPreparationSelect").value;
-        const component = qcMasterData.components.find((item) => item.componentId === componentId);
-        if (component) {
-          lines.push("ผลิตภัณฑ์: " + component.productType);
-          lines.push("ถุง/วิธีเตรียม: " + component.preparationType);
-        }
-      } else {
-        const itemId = $("qcItemSelect").value;
-        const item = qcMasterData.items.find((x) => x.itemId === itemId);
-        if (item) lines.push("รายการย่อย: " + buildItemLabel(item));
-      }
-
-      showMessage("qcSelectedInfo", lines.join("\\n"), "success");
-    }
-
-    function fillSelect(selectId, options, placeholder) {
-      const select = $(selectId);
-      if (!select) return;
-      select.innerHTML = "";
-      const first = document.createElement("option");
-      first.value = "";
-      first.textContent = placeholder || "เลือก";
-      select.appendChild(first);
-      options.forEach((option) => {
-        const el = document.createElement("option");
-        el.value = option.value;
-        el.textContent = option.label;
-        select.appendChild(el);
-      });
-    }
-
-    function uniqueValues(values) {
-      return [...new Set(values.map((x) => String(x || "").trim()).filter(Boolean))];
-    }
-
-    function buildItemLabel(item) {
-      const parts = [item.itemName || "-"];
-      if (item.instrumentCode) parts.push(item.instrumentCode);
-      if (item.bemNo) parts.push("BEM " + item.bemNo);
-      return parts.join(" | ");
-    }
-
-    async function loadLotSetupMasterData(forceReload = false) {
-  const token = getToken();
-
-  if (!token) {
-    showLogin();
-    return;
-  }
-
-  if (qcMasterData.loaded && !forceReload) {
-    renderLotSetupDropdowns();
-    return;
-  }
-
-  showMessage("lotSetupMessage", "กำลังโหลด Master สำหรับตั้งค่า Lot...", "success");
-
-  try {
-    const result = await api("getQCMasterData", { token });
-
-    if (!result.ok) {
-      showMessage("lotSetupMessage", result.message || "โหลด Master ไม่สำเร็จ", "error");
-      return;
-    }
-
-    qcMasterData = {
-      catalog: Array.isArray(result.catalog) ? result.catalog : [],
-      items: Array.isArray(result.items) ? result.items : [],
-      components: Array.isArray(result.components) ? result.components : [],
-      loaded: true
-    };
-
-    renderLotSetupDropdowns();
-    showMessage("lotSetupMessage", "โหลด Master สำเร็จ", "success");
-  } catch (err) {
-    showMessage("lotSetupMessage", err.message || String(err), "error");
-  }
-}
-
-function renderLotSetupDropdowns() {
-  const groups = uniqueValues(qcMasterData.catalog.map((item) => item.qcGroup));
-
-  fillSelect(
-    "lotQcGroupSelect",
-    groups.map((group) => ({ value: group, label: group })),
-    "เลือกกลุ่ม QC"
-  );
-
-  fillSelect("lotQcCatalogSelect", [], "กรุณาเลือกกลุ่ม QC ก่อน");
-  fillSelect("lotItemSelect", [], "เลือกรายการย่อย");
-  fillSelect("lotComponentProductSelect", [], "เลือกผลิตภัณฑ์");
-  fillSelect("lotComponentSelect", [], "เลือกชนิดถุง / วิธีเตรียม");
-
-  $("lotItemBox").classList.add("hidden");
-  $("lotComponentBox").classList.add("hidden");
-}
-
-function handleLotQCGroupChange() {
-  const group = $("lotQcGroupSelect").value;
-
-  const catalogList = qcMasterData.catalog.filter((item) => item.qcGroup === group);
-
-  fillSelect(
-    "lotQcCatalogSelect",
-    catalogList.map((item) => ({ value: item.qcId, label: item.qcName })),
-    "เลือกรายการ QC"
-  );
-
-  fillSelect("lotItemSelect", [], "เลือกรายการย่อย");
-  fillSelect("lotComponentProductSelect", [], "เลือกผลิตภัณฑ์");
-  fillSelect("lotComponentSelect", [], "เลือกชนิดถุง / วิธีเตรียม");
-
-  $("lotItemBox").classList.add("hidden");
-  $("lotComponentBox").classList.add("hidden");
-  showMessage("lotSetupMessage", "", "", true);
-}
-
-function handleLotQCCatalogChange() {
-  const qcId = $("lotQcCatalogSelect").value;
-  const selected = qcMasterData.catalog.find((item) => item.qcId === qcId);
-
-  $("lotItemBox").classList.add("hidden");
-  $("lotComponentBox").classList.add("hidden");
-
-  if (!selected) return;
-
-  if (selected.qcGroup === "Blood Component QC") {
-    const productTypes = uniqueValues(qcMasterData.components.map((item) => item.productType));
-
-    fillSelect(
-      "lotComponentProductSelect",
-      productTypes.map((x) => ({ value: x, label: x })),
-      "เลือกผลิตภัณฑ์"
-    );
-
-    fillSelect("lotComponentSelect", [], "เลือกชนิดถุง / วิธีเตรียม");
-    $("lotComponentBox").classList.remove("hidden");
-  } else {
-    const itemList = qcMasterData.items.filter((item) => item.qcId === qcId);
-
-    fillSelect(
-      "lotItemSelect",
-      itemList.map((item) => ({ value: item.itemId, label: buildItemLabel(item) })),
-      "เลือกรายการย่อย"
-    );
-
-    $("lotItemBox").classList.remove("hidden");
-  }
-  renderExistingLotDropdown();
-}
-
-function handleLotComponentProductChange() {
-  const productType = $("lotComponentProductSelect").value;
-
-  const list = qcMasterData.components.filter((item) => item.productType === productType);
-
-  fillSelect(
-    "lotComponentSelect",
-    list.map((item) => ({
-      value: item.componentId,
-      label: item.preparationType + " — " + item.displayName
-    })),
-    "เลือกชนิดถุง / วิธีเตรียม"
-  );
-  renderExistingLotDropdown();
-}
-
-async function saveLotHeaderFromForm() {
-  const token = getToken();
-
-  if (!token) {
-    showLogin();
-    return;
-  }
-
-  const qcId = $("lotQcCatalogSelect").value;
-  const selected = qcMasterData.catalog.find((item) => item.qcId === qcId);
-
-  if (!selected) {
-    showMessage("lotSetupMessage", "กรุณาเลือกรายการ QC", "error");
-    return;
-  }
-
-  let itemId = "";
-  let componentId = "";
-
-  if (selected.qcGroup === "Blood Component QC") {
-    componentId = $("lotComponentSelect").value;
-
-    if (!componentId) {
-      showMessage("lotSetupMessage", "กรุณาเลือกชนิดถุง / วิธีเตรียม", "error");
-      return;
-    }
-  } else {
-    itemId = $("lotItemSelect").value;
-
-    if (!itemId) {
-      showMessage("lotSetupMessage", "กรุณาเลือกรายการย่อย / เครื่อง / การทดสอบ", "error");
-      return;
-    }
-  }
-
-  const lotType = $("lotTypeSelect").value;
-  const lotNo = $("lotNoInput").value.trim();
-  const expDate = $("lotExpDateInput").value;
-  const startDate = $("lotStartDateInput").value;
-  const status = $("lotStatusSelect").value;
-  const note = $("lotNoteInput").value.trim();
-
-  if (!lotNo) {
-    showMessage("lotSetupMessage", "กรุณากรอก Lot No.", "error");
-    return;
-  }
-
-  if (!lotType) {
-    showMessage("lotSetupMessage", "กรุณาเลือก Lot Type", "error");
-    return;
-  }
-
-  const btn = $("saveLotHeaderBtn");
-  btn.disabled = true;
-  btn.textContent = "กำลังบันทึก...";
-
-  try {
-    const result = await api("saveLotHeader", {
-      token,
-      lotId: currentEditingLotId,
-      qcId,
-      itemId,
-      componentId,
-      lotType,
-      lotNo,
-      expDate,
-      startDate,
-      endDate: "",
-      status,
-      note,
-      userAgent: navigator.userAgent
-    });
-
-    if (!result.ok) {
-      showMessage("lotSetupMessage", result.message || "บันทึก Lot ไม่สำเร็จ", "error");
-      return;
-    }
-
-    showMessage(
-      "lotSetupMessage",
-      "บันทึก Lot สำเร็จ\nLot ID: " + result.lotId + "\nระบบบันทึก Audit Log แล้ว",
-      "success"
-    );
-
-    $("lotNoInput").value = "";
-    $("lotExpDateInput").value = "";
-    $("lotStartDateInput").value = "";
-    $("lotNoteInput").value = "";
-
-    currentEditingLotId = result.lotId || currentEditingLotId || "";
-
-const lotResult = await api("getLotSetupData", { token });
-
-if (lotResult.ok) {
-  lotSetupData = {
-    lots: Array.isArray(lotResult.lots) ? lotResult.lots : [],
-    expected: Array.isArray(lotResult.expected) ? lotResult.expected : [],
-    loaded: true
-  };
-}
-
-renderExistingLotDropdown();
-
-if (currentEditingLotId && $("existingLotSelect")) {
-  $("existingLotSelect").value = currentEditingLotId;
-  handleExistingLotChange();
-}
-  } catch (err) {
-    showMessage("lotSetupMessage", err.message || String(err), "error");
-  } finally {
-    btn.disabled = false;
-    btn.textContent = "บันทึก Lot";
-  }
-}
-
-    function getRowValue(row, keys) {
-      if (!row) return "";
-
-      for (const key of keys) {
-    if (Object.prototype.hasOwnProperty.call(row, key)) {
-      const value = row[key];
-      if (value !== null && value !== undefined && String(value).trim() !== "") {
-        return value;
-      }
-    }
-  }
-
-  const lowerMap = {};
-  Object.keys(row).forEach((key) => {
-    lowerMap[String(key).toLowerCase()] = row[key];
-  });
-
-  for (const key of keys) {
-    const value = lowerMap[String(key).toLowerCase()];
-    if (value !== null && value !== undefined && String(value || "").trim() !== "") {
-      return value;
-    }
-  }
-
-  return "";
-}
-
-function cleanKey(value) {
-  return String(value || "").trim();
-}
-
-function getItemNameFromId(itemId) {
-  const target = cleanKey(itemId);
-  const item = (qcMasterData.items || []).find((x) => cleanKey(x.itemId) === target);
-  return item ? (item.itemName || target) : target;
-}
-
-function getComponentNameFromId(componentId) {
-  const target = cleanKey(componentId);
-  const item = (qcMasterData.components || []).find((x) => cleanKey(x.componentId) === target);
-  if (!item) return target;
-  return item.displayName || [item.productType, item.preparationType].filter(Boolean).join(" / ");
-}
-    
-   function renderExistingLotDropdown() {
-  const select = $("existingLotSelect");
-  const info = $("existingLotInfoText");
-
-  if (!select || !info) return;
-
-  currentEditingLotId = "";
-  info.value = "";
-
-  if ($("saveLotHeaderBtn")) {
-    $("saveLotHeaderBtn").textContent = "บันทึก Lot";
-  }
-
-  if (typeof clearExpectedForm === "function") {
-    clearExpectedForm();
-  }
-
-  const qcId = cleanKey($("lotQcCatalogSelect")?.value || "");
-  const selected = (qcMasterData.catalog || []).find((item) => cleanKey(item.qcId) === qcId);
-
-  if (!qcId || !selected) {
-    fillSelect("existingLotSelect", [], "กรุณาเลือกรายการ QC ก่อน");
-    return;
-  }
-
-  const allLots = Array.isArray(lotSetupData.lots) ? lotSetupData.lots : [];
-
-  if (!allLots.length) {
-    fillSelect("existingLotSelect", [], "ยังโหลด Lot_Header ไม่ได้ หรือ Lot_Header ว่าง");
-    return;
-  }
-
-  let itemId = "";
-  let componentId = "";
-
-  if (selected.qcGroup === "Blood Component QC") {
-    componentId = cleanKey($("lotComponentSelect")?.value || "");
-  } else {
-    itemId = cleanKey($("lotItemSelect")?.value || "");
-  }
-
-  const activeLotsInThisQc = allLots.filter((lot) => {
-    const lotQcId = cleanKey(getRowValue(lot, ["qcId", "qcid", "qcID"]));
-    const lotStatus = cleanKey(getRowValue(lot, ["status"])).toLowerCase() || "active";
-
-    return lotQcId === qcId && lotStatus === "active";
-  });
-
-  const exactLots = activeLotsInThisQc.filter((lot) => {
-    const lotItemId = cleanKey(getRowValue(lot, ["itemId", "itemid", "itemID"]));
-    const lotComponentId = cleanKey(getRowValue(lot, ["componentId", "componentid", "componentID"]));
-
-    if (componentId) return lotComponentId === componentId;
-    if (itemId) return lotItemId === itemId;
-
-    return true;
-  });
-
-  const lotsToShow = exactLots.length ? exactLots : activeLotsInThisQc;
-
-  let placeholder = "ยังไม่มี Lot active ของรายการนี้";
-
-  if (lotsToShow.length && !exactLots.length) {
-    placeholder = "พบ Lot ใน QC นี้ แต่ item/component ไม่ตรง ให้เลือกตรวจสอบ";
-  } else if (lotsToShow.length) {
-    placeholder = "เลือก Lot ที่มีอยู่";
-  }
-
-  fillSelect(
-    "existingLotSelect",
-    lotsToShow.map((lot) => ({
-      value: cleanKey(getRowValue(lot, ["lotId", "lotid", "lotID"])),
-      label: buildLotLabel(lot)
-    })),
-    placeholder
-  );
-}
-
-function handleExistingLotChange() {
-  const lotId = cleanKey($("existingLotSelect")?.value || "");
-  const info = $("existingLotInfoText");
-
-  currentEditingLotId = lotId || "";
-
-  if (!lotId) {
-    if (info) info.value = "";
-
-    if ($("saveLotHeaderBtn")) {
-      $("saveLotHeaderBtn").textContent = "บันทึก Lot";
-    }
-
-    if (typeof clearExpectedForm === "function") {
-      clearExpectedForm();
-    }
-
-    return;
-  }
-
-  const lot = (lotSetupData.lots || []).find((item) => {
-    return cleanKey(getRowValue(item, ["lotId", "lotid", "lotID"])) === lotId;
-  });
-
-  if (!lot) {
-    if (info) info.value = "หา Lot นี้ไม่เจอในข้อมูลที่โหลดมา";
-    return;
-  }
-
-  $("lotTypeSelect").value = getRowValue(lot, ["lotType", "lottype"]) || "reagent";
-  $("lotNoInput").value = getRowValue(lot, ["lotNo", "lotno", "lotNO"]) || "";
-  $("lotExpDateInput").value = toDateInputValue(getRowValue(lot, ["expDate", "expdate"]));
-  $("lotStartDateInput").value = toDateInputValue(getRowValue(lot, ["startDate", "startdate"]));
-  $("lotStatusSelect").value = getRowValue(lot, ["status"]) || "active";
-  $("lotNoteInput").value = getRowValue(lot, ["note"]) || "";
-
-  const itemId = getRowValue(lot, ["itemId", "itemid", "itemID"]);
-  const componentId = getRowValue(lot, ["componentId", "componentid", "componentID"]);
-
-  const lines = [
-    "Lot ID: " + lotId,
-    "Lot No.: " + (getRowValue(lot, ["lotNo", "lotno", "lotNO"]) || "-"),
-    "ชนิด: " + (getRowValue(lot, ["lotType", "lottype"]) || "-"),
-    "รายการ: " + (itemId ? getItemNameFromId(itemId) : "-"),
-    "Component: " + (componentId ? getComponentNameFromId(componentId) : "-"),
-    "Exp: " + (toDateInputValue(getRowValue(lot, ["expDate", "expdate"])) || "-")
-  ];
-
-  if (info) {
-    info.value = lines.join("\n")
-  }
-
-  if ($("saveLotHeaderBtn")) {
-    $("saveLotHeaderBtn").textContent = "แก้ไข Lot";
-  }
-
-  if (typeof renderExpectedForSelectedLot === "function") {
-    renderExpectedForSelectedLot();
-  }
-}
-
-function buildLotLabel(lot) {
-  const lotNo = getRowValue(lot, ["lotNo", "lotno", "lotNO"]);
-  const lotType = getRowValue(lot, ["lotType", "lottype"]);
-  const expDate = toDateInputValue(getRowValue(lot, ["expDate", "expdate"]));
-  const itemId = getRowValue(lot, ["itemId", "itemid", "itemID"]);
-  const componentId = getRowValue(lot, ["componentId", "componentid", "componentID"]);
-
-  const parts = [];
-
-  if (lotNo) parts.push("Lot " + lotNo);
-  if (lotType) parts.push(lotType);
-  if (itemId) parts.push(getItemNameFromId(itemId));
-  if (componentId) parts.push(getComponentNameFromId(componentId));
-  if (expDate) parts.push("Exp " + expDate);
-
-  return parts.join(" | ");
-}
-
-function toDateInputValue(value) {
-  if (!value) return "";
-
-  const text = String(value).trim();
-
-  if (/^\d{4}-\d{2}-\d{2}/.test(text)) {
-    return text.slice(0, 10);
-  }
-
-  const match = text.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
-  if (match) {
-    const dd = match[1].padStart(2, "0");
-    const mm = match[2].padStart(2, "0");
-    const yyyy = match[3];
-    return yyyy + "-" + mm + "-" + dd;
-  }
-
-  return "";
-}
-
-    function clearExpectedFields() {
-  currentEditingExpectedId = "";
-
-  const fields = [
-    "expectedSampleIdInput",
-    "expectedSectionInput",
-    "expectedFieldKeyInput",
-    "expectedFieldNameInput",
-    "expectedValueInput",
-    "acceptableValuesInput",
-    "expectedSortOrderInput",
-    "expectedNoteInput"
-  ];
-
-  fields.forEach((id) => {
-    const el = $(id);
-    if (el) el.value = "";
-  });
-
-  if ($("expectedResultTypeSelect")) $("expectedResultTypeSelect").value = "reaction";
-  if ($("expectedStatusSelect")) $("expectedStatusSelect").value = "active";
-  if ($("existingExpectedInfoText")) $("existingExpectedInfoText").value = "";
-  if ($("saveExpectedBtn")) $("saveExpectedBtn").textContent = "บันทึก Expected";
-}
-
-function clearExpectedForm() {
-  clearExpectedFields();
-
-  const box = $("expectedSetupBox");
-  if (box) box.classList.add("hidden");
-
-  fillSelect("existingExpectedSelect", [], "เลือก Lot ก่อน");
-}
-
-function renderExpectedForSelectedLot() {
-  const box = $("expectedSetupBox");
-
-  if (!box) return;
-
-  clearExpectedFields();
-
-  if (!currentEditingLotId) {
-    clearExpectedForm();
-    return;
-  }
-
-  box.classList.remove("hidden");
-
-  const expectedList = lotSetupData.expected.filter((row) => {
-    const sameLot = String(row.lotId || "") === String(currentEditingLotId || "");
-    const active = String(row.status || "active").toLowerCase() === "active";
-    return sameLot && active;
-  });
-
-  fillSelect(
-    "existingExpectedSelect",
-    expectedList.map((row) => ({
-      value: row.expectedId,
-      label: buildExpectedLabel(row)
-    })),
-    expectedList.length ? "เลือก Expected ที่มีอยู่" : "ยังไม่มี Expected ของ Lot นี้"
-  );
-}
-
-function handleExistingExpectedChange() {
-  const expectedId = $("existingExpectedSelect").value;
-
-  currentEditingExpectedId = expectedId || "";
-  clearExpectedFields();
-  currentEditingExpectedId = expectedId || "";
-
-  if (!expectedId) return;
-
-  const row = lotSetupData.expected.find((item) => String(item.expectedId || "") === String(expectedId));
-
-  if (!row) return;
-
-  $("expectedSampleIdInput").value = row.sampleId || "";
-  $("expectedSectionInput").value = row.section || "";
-  $("expectedFieldKeyInput").value = row.fieldKey || "";
-  $("expectedFieldNameInput").value = row.fieldName || "";
-  $("expectedValueInput").value = row.expectedValue || "";
-  $("acceptableValuesInput").value = row.acceptableValues || "";
-  $("expectedResultTypeSelect").value = row.resultType || "reaction";
-  $("expectedSortOrderInput").value = row.sortOrder || "";
-  $("expectedStatusSelect").value = row.status || "active";
-  $("expectedNoteInput").value = row.note || "";
-
-  $("existingExpectedInfoText").value =
-    (row.sampleId || "-") + " | " +
-    (row.fieldName || "-") + " = " +
-    (row.expectedValue || "-");
-
-  $("saveExpectedBtn").textContent = "แก้ไข Expected";
-}
-
-function startNewExpectedRow() {
-  clearExpectedFields();
-  currentEditingExpectedId = "";
-  $("existingExpectedSelect").value = "";
-  $("saveExpectedBtn").textContent = "บันทึก Expected";
-}
-
-function buildExpectedLabel(row) {
-  const parts = [];
-
-  if (row.sampleId) parts.push(row.sampleId);
-  if (row.fieldName) parts.push(row.fieldName);
-  if (row.expectedValue) parts.push("= " + row.expectedValue);
-
-  return parts.join(" | ");
-}
-
-async function saveExpectedFromForm() {
-  const token = getToken();
-
-  if (!token) {
-    showLogin();
-    return;
-  }
-
-  if (!currentEditingLotId) {
-    showMessage("lotSetupMessage", "กรุณาเลือก Lot ก่อนบันทึก Expected", "error");
-    return;
-  }
-
-  const lot = lotSetupData.lots.find((item) => String(item.lotId || "") === String(currentEditingLotId));
-
-  if (!lot) {
-    showMessage("lotSetupMessage", "ไม่พบข้อมูล Lot ที่เลือก กรุณาโหลด Master ใหม่", "error");
-    return;
-  }
-
-  const sampleId = $("expectedSampleIdInput").value.trim();
-  const section = $("expectedSectionInput").value.trim();
-  const fieldKey = $("expectedFieldKeyInput").value.trim();
-  const fieldName = $("expectedFieldNameInput").value.trim();
-  const expectedValue = $("expectedValueInput").value.trim();
-  const acceptableValues = $("acceptableValuesInput").value.trim() || expectedValue;
-  const resultType = $("expectedResultTypeSelect").value;
-  const sortOrder = $("expectedSortOrderInput").value.trim();
-  const status = $("expectedStatusSelect").value;
-  const note = $("expectedNoteInput").value.trim();
-
-  if (!sampleId) {
-    showMessage("lotSetupMessage", "กรุณากรอก Sample ID", "error");
-    return;
-  }
-
-  if (!section) {
-    showMessage("lotSetupMessage", "กรุณากรอก Section", "error");
-    return;
-  }
-
-  if (!fieldKey) {
-    showMessage("lotSetupMessage", "กรุณากรอก Field Key", "error");
-    return;
-  }
-
-  if (!fieldName) {
-    showMessage("lotSetupMessage", "กรุณากรอก Field Name", "error");
-    return;
-  }
-
-  if (!expectedValue) {
-    showMessage("lotSetupMessage", "กรุณากรอก Expected Value", "error");
-    return;
-  }
-
-  const btn = $("saveExpectedBtn");
-  btn.disabled = true;
-  btn.textContent = "กำลังบันทึก...";
-
-  try {
-    const result = await api("saveLotExpectedRow", {
-      token,
-      expectedId: currentEditingExpectedId,
-      lotId: currentEditingLotId,
-      qcId: lot.qcId || "",
-      itemId: lot.itemId || "",
-      componentId: lot.componentId || "",
-      sampleId,
-      section,
-      fieldKey,
-      fieldName,
-      expectedValue,
-      acceptableValues,
-      resultType,
-      sortOrder,
-      status,
-      note,
-      userAgent: navigator.userAgent
-    });
-
-    if (!result.ok) {
-      showMessage("lotSetupMessage", result.message || "บันทึก Expected ไม่สำเร็จ", "error");
-      return;
-    }
-
-    const lotResult = await api("getLotSetupData", { token });
-
-    if (lotResult.ok) {
-      lotSetupData = {
-        lots: Array.isArray(lotResult.lots) ? lotResult.lots : [],
-        expected: Array.isArray(lotResult.expected) ? lotResult.expected : [],
-        loaded: true
+    function applyRoleMenu() {
+      const role = currentUser?.role || "";
+
+      const roleAllow = {
+        staff: [
+          "dashboard",
+          "daily-qc", "test-dependent-qc", "calibration", "weekly-component-qc",
+          "fail-daily-qc", "fail-test-dependent-qc", "fail-calibration", "fail-weekly-component-qc",
+          "history-record", "history-fail-action"
+        ],
+
+        manager: [
+          "dashboard",
+          "daily-qc", "test-dependent-qc", "calibration", "weekly-component-qc",
+          "fail-daily-qc", "fail-test-dependent-qc", "fail-calibration", "fail-weekly-component-qc",
+          "expected-matrix", "component-list",
+          "history-record", "history-fail-action", "audit-log",
+          "review-pending", "monthly-summary"
+        ],
+
+        sup_manager: [
+          "dashboard",
+          "daily-qc", "test-dependent-qc", "calibration", "weekly-component-qc",
+          "fail-daily-qc", "fail-test-dependent-qc", "fail-calibration", "fail-weekly-component-qc",
+          "expected-matrix", "component-list",
+          "history-record", "history-fail-action", "audit-log",
+          "review-pending", "monthly-summary",
+          "users", "qc-catalog"
+        ],
+
+        physician: [
+          "dashboard",
+          "history-record", "history-fail-action",
+          "review-pending", "monthly-summary", "final-approve"
+        ],
+
+        admin: Object.keys(pageInfo)
       };
-    }
 
-    showMessage(
-      "lotSetupMessage",
-      result.message + "\nExpected ID: " + result.expectedId + "\nระบบบันทึก Audit Log แล้ว",
-      "success"
-    );
+      const allowed = roleAllow[role] || ["dashboard"];
 
-    currentEditingExpectedId = "";
-    renderExpectedForSelectedLot();
-  } catch (err) {
-    showMessage("lotSetupMessage", err.message || String(err), "error");
-  } finally {
-    btn.disabled = false;
-    btn.textContent = "บันทึก Expected";
-  }
-}
-    
-    function safeText(text) {
-      return String(text)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-    }
-
-    function bind(id, eventName, handler) {
-      const el = $(id);
-      if (!el) return;
-      el.addEventListener(eventName, handler);
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      bind("loginForm", "submit", handleLogin);
-      bind("loginBtn", "click", handleLogin);
-      bind("logoutBtn", "click", handleLogout);
-      bind("topLogoutBtn", "click", handleLogout);
-      bind("checkSessionBtn", "click", refreshMe);
-      bind("reloadMasterBtn", "click", () => loadQCMasterData(true));
-      bind("qcGroupSelect", "change", handleQCGroupChange);
-      bind("qcCatalogSelect", "change", handleQCCatalogChange);
-      bind("qcItemSelect", "change", showSelectedQCSummary);
-      bind("componentProductSelect", "change", handleComponentProductChange);
-      bind("componentPreparationSelect", "change", showSelectedQCSummary);
-      bind("existingLotSelect", "change", handleExistingLotChange);
-      bind("openMenuBtn", "click", () => $("sidebar").classList.toggle("open"));
-
-      document.querySelectorAll(".menu-btn[data-page]").forEach((btn) => {
-        btn.addEventListener("click", () => showPage(btn.dataset.page));
+      document.querySelectorAll("[data-page]").forEach(btn => {
+        const page = btn.dataset.page;
+        btn.style.display = allowed.includes(page) ? "flex" : "none";
       });
 
-      document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape") $("sidebar").classList.remove("open");
-      });
+      document.querySelectorAll(".menu-toggle").forEach(toggle => {
+        const submenu = toggle.nextElementSibling;
+        if (!submenu) return;
 
-      boot();
-    });
+        const visibleItems = [...submenu.querySelectorAll("[data-page]")]
+          .filter(item => item.style.display !== "none");
+
+        toggle.style.display = visibleItems.length > 0 ? "flex" : "none";
+        submenu.style.display = visibleItems.length > 0 ? "" : "none";
+      });
+    }
+
+    function showPage(page) {
+      const info = pageInfo[page] || ["ไม่พบหน้า", ""];
+
+      document.getElementById("pageTitle").textContent = info[0];
+      document.getElementById("pageSubtitle").textContent = info[1];
+
+      document.getElementById("content").innerHTML = `
+        <div class="card">
+          <div class="card-title">${info[0]}</div>
+          <div class="card-text">
+            ${info[1] || "หน้านี้ยังอยู่ระหว่างเตรียมโครงสร้าง"}
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">สถานะ</div>
+          <div class="card-text">
+            ผู้ใช้งาน: <strong>${currentUser?.fullName || "-"}</strong><br>
+            Role: <strong>${currentUser?.role || "-"}</strong><br>
+            หน้าที่เปิดอยู่: <strong>${page}</strong>
+          </div>
+        </div>
+      `;
+    }
+
+    function setActiveMenu(activeBtn) {
+      document.querySelectorAll("[data-page]").forEach(btn => {
+        btn.classList.remove("active");
+      });
+      activeBtn.classList.add("active");
+    }
+
+    function toggleSidebar() {
+      const sidebar = document.getElementById("sidebar");
+      const main = document.getElementById("main");
+
+      if (window.innerWidth <= 900) {
+        sidebar.classList.add("mobile-open");
+        document.getElementById("mobileOverlay").classList.add("show");
+        return;
+      }
+
+      sidebar.classList.toggle("collapsed");
+      main.classList.toggle("collapsed");
+    }
+
+    function closeMobileSidebar() {
+      document.getElementById("sidebar").classList.remove("mobile-open");
+      document.getElementById("mobileOverlay").classList.remove("show");
+    }
+
+    function showLoginAlert(message) {
+      const alert = document.getElementById("loginAlert");
+      alert.textContent = message;
+      alert.style.display = "block";
+    }
+
+    function hideLoginAlert() {
+      const alert = document.getElementById("loginAlert");
+      alert.textContent = "";
+      alert.style.display = "none";
+    }
   </script>
 </body>
 </html>
