@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>IQC Blood Bank CNMI</title>
+  <title>IQC Blood Bank</title>
   <style>
     :root {
       --bg: #eef5fb;
@@ -582,33 +582,55 @@
           <div class="page-header">
             <div>
               <h2>บันทึก IQC</h2>
-              <p>หน้านี้จะใช้ token ของผู้ login เป็นผู้บันทึกอัตโนมัติ</p>
+              <p>เลือกประเภท QC จาก Master Sheet แล้วระบบจะแสดงรายการย่อยที่เกี่ยวข้อง</p>
             </div>
+            <button class="btn btn-light" type="button" onclick="loadQCMasterData(true)">โหลด Master ใหม่</button>
           </div>
 
           <div class="card">
             <div class="form-row">
               <div class="field">
-                <label>พื้นที่</label>
-                <select id="areaSelect">
-                  <option value="คลังเลือด">คลังเลือด</option>
-                  <option value="บริจาคโลหิต">บริจาคโลหิต</option>
+                <label>กลุ่ม QC</label>
+                <select id="qcGroupSelect">
+                  <option value="">กำลังโหลด...</option>
                 </select>
               </div>
 
               <div class="field">
-                <label>ประเภท IQC</label>
-                <select id="iqcTypeSelect">
-                  <option value="Daily Reagent">Daily Reagent</option>
-                  <option value="IH-500">IH-500</option>
-                  <option value="ORTHO">Ortho Vision Max</option>
-                  <option value="Hemochroma">Hemochroma</option>
-                  <option value="Phenotype">Red Cell Phenotype</option>
+                <label>รายการ QC</label>
+                <select id="qcCatalogSelect">
+                  <option value="">กรุณาเลือกกลุ่ม QC ก่อน</option>
                 </select>
               </div>
             </div>
 
-            <p class="muted">Phase ถัดไปจะเชื่อม API เพื่อดึงเครื่อง, Lot active และสร้างฟอร์มกรอก Actual result จาก Lot_Expected</p>
+            <div id="qcItemBox" class="form-row hidden">
+              <div class="field">
+                <label>รายการย่อย / เครื่อง / การทดสอบ</label>
+                <select id="qcItemSelect"></select>
+              </div>
+
+              <div class="field">
+                <label>Trigger</label>
+                <input id="qcTriggerText" type="text" disabled />
+              </div>
+            </div>
+
+            <div id="componentBox" class="form-row hidden">
+              <div class="field">
+                <label>ผลิตภัณฑ์</label>
+                <select id="componentProductSelect"></select>
+              </div>
+
+              <div class="field">
+                <label>ชนิดถุง / วิธีเตรียม</label>
+                <select id="componentPreparationSelect"></select>
+              </div>
+            </div>
+
+            <div id="qcSelectedInfo" class="message hidden"></div>
+
+            <p class="muted">ขั้นนี้เป็นการดึง Master จาก Google Sheets จริงก่อน ขั้นต่อไปจะสร้างฟอร์มบันทึกตามรายการที่เลือก</p>
           </div>
         </section>
 
@@ -700,6 +722,12 @@
     };
 
     let currentUser = null;
+    let qcMasterData = {
+      catalog: [],
+      items: [],
+      components: [],
+      loaded: false
+    };
 
     const $ = (id) => document.getElementById(id);
 
@@ -950,6 +978,204 @@
       });
 
       $("sidebar").classList.remove("open");
+
+      if (pageId === "iqcEntryPage" && !qcMasterData.loaded) {
+        loadQCMasterData(false);
+      }
+    }
+
+    /********************************************************
+     * 5.1) QC Master Data
+     ********************************************************/
+    async function loadQCMasterData(forceReload = false) {
+      const token = getToken();
+      if (!token) return;
+
+      if (qcMasterData.loaded && !forceReload) {
+        renderQCMasterDropdowns();
+        return;
+      }
+
+      showMessage("qcSelectedInfo", "กำลังโหลดข้อมูล Master จาก Google Sheets...", "success");
+
+      try {
+        const result = await api("getQCMasterData", { token });
+
+        if (!result.ok) {
+          showMessage("qcSelectedInfo", result.message || "โหลด Master ไม่สำเร็จ", "error");
+          return;
+        }
+
+        qcMasterData = {
+          catalog: Array.isArray(result.catalog) ? result.catalog : [],
+          items: Array.isArray(result.items) ? result.items : [],
+          components: Array.isArray(result.components) ? result.components : [],
+          loaded: true
+        };
+
+        renderQCMasterDropdowns();
+        showMessage("qcSelectedInfo", "โหลด Master สำเร็จ", "success");
+      } catch (err) {
+        showMessage("qcSelectedInfo", err.message, "error");
+      }
+    }
+
+    function renderQCMasterDropdowns() {
+      const groups = uniqueValues(qcMasterData.catalog.map((item) => item.qcGroup).filter(Boolean));
+      fillSelect("qcGroupSelect", groups.map((group) => ({ value: group, label: group })), "เลือกกลุ่ม QC");
+      fillSelect("qcCatalogSelect", [], "กรุณาเลือกกลุ่ม QC ก่อน");
+      fillSelect("qcItemSelect", [], "กรุณาเลือกรายการ QC ก่อน");
+      fillSelect("componentProductSelect", [], "เลือกผลิตภัณฑ์");
+      fillSelect("componentPreparationSelect", [], "เลือกชนิดถุง / วิธีเตรียม");
+
+      $("qcItemBox").classList.add("hidden");
+      $("componentBox").classList.add("hidden");
+      $("qcTriggerText").value = "";
+    }
+
+    function handleQCGroupChange() {
+      const group = $("qcGroupSelect").value;
+      const catalogList = qcMasterData.catalog.filter((item) => item.qcGroup === group);
+
+      fillSelect(
+        "qcCatalogSelect",
+        catalogList.map((item) => ({
+          value: item.qcId,
+          label: item.qcName
+        })),
+        "เลือกรายการ QC"
+      );
+
+      $("qcItemBox").classList.add("hidden");
+      $("componentBox").classList.add("hidden");
+      $("qcTriggerText").value = "";
+      showMessage("qcSelectedInfo", "", "", true);
+    }
+
+    function handleQCCatalogChange() {
+      const qcId = $("qcCatalogSelect").value;
+      const selected = qcMasterData.catalog.find((item) => item.qcId === qcId);
+
+      $("qcItemBox").classList.add("hidden");
+      $("componentBox").classList.add("hidden");
+      $("qcTriggerText").value = selected?.trigger || "";
+
+      if (!selected) {
+        showMessage("qcSelectedInfo", "", "", true);
+        return;
+      }
+
+      if (selected.qcGroup === "Blood Component QC") {
+        renderComponentSelectors();
+      } else {
+        renderItemSelector(qcId);
+      }
+
+      showSelectedQCSummary();
+    }
+
+    function renderItemSelector(qcId) {
+      const itemList = qcMasterData.items.filter((item) => item.qcId === qcId);
+
+      if (!itemList.length) {
+        $("qcItemBox").classList.add("hidden");
+        return;
+      }
+
+      fillSelect(
+        "qcItemSelect",
+        itemList.map((item) => ({
+          value: item.itemId,
+          label: buildItemLabel(item)
+        })),
+        "เลือกรายการย่อย"
+      );
+
+      $("qcItemBox").classList.remove("hidden");
+    }
+
+    function renderComponentSelectors() {
+      const productTypes = uniqueValues(qcMasterData.components.map((item) => item.productType).filter(Boolean));
+      fillSelect("componentProductSelect", productTypes.map((x) => ({ value: x, label: x })), "เลือกผลิตภัณฑ์");
+      fillSelect("componentPreparationSelect", [], "เลือกชนิดถุง / วิธีเตรียม");
+      $("componentBox").classList.remove("hidden");
+    }
+
+    function handleComponentProductChange() {
+      const productType = $("componentProductSelect").value;
+      const list = qcMasterData.components.filter((item) => item.productType === productType);
+
+      fillSelect(
+        "componentPreparationSelect",
+        list.map((item) => ({
+          value: item.componentId,
+          label: item.preparationType + " — " + item.displayName
+        })),
+        "เลือกชนิดถุง / วิธีเตรียม"
+      );
+
+      showSelectedQCSummary();
+    }
+
+    function showSelectedQCSummary() {
+      const qcId = $("qcCatalogSelect").value;
+      const selected = qcMasterData.catalog.find((item) => item.qcId === qcId);
+      if (!selected) return;
+
+      const lines = [
+        "เลือก: " + (selected.qcName || "-"),
+        "กลุ่ม: " + (selected.qcGroup || "-"),
+        "Trigger: " + (selected.trigger || "-"),
+        "Monthly Summary: " + String(selected.hasMonthlySummary || "-")
+      ];
+
+      if (selected.qcGroup === "Blood Component QC") {
+        const componentId = $("componentPreparationSelect").value;
+        const component = qcMasterData.components.find((item) => item.componentId === componentId);
+        if (component) {
+          lines.push("ผลิตภัณฑ์: " + component.productType);
+          lines.push("ถุง/วิธีเตรียม: " + component.preparationType);
+        }
+      } else {
+        const itemId = $("qcItemSelect").value;
+        const item = qcMasterData.items.find((x) => x.itemId === itemId);
+        if (item) {
+          lines.push("รายการย่อย: " + buildItemLabel(item));
+        }
+      }
+
+      showMessage("qcSelectedInfo", lines.join("
+"), "success");
+    }
+
+    function fillSelect(selectId, options, placeholder) {
+      const select = $(selectId);
+      if (!select) return;
+
+      select.innerHTML = "";
+
+      const first = document.createElement("option");
+      first.value = "";
+      first.textContent = placeholder || "เลือก";
+      select.appendChild(first);
+
+      options.forEach((option) => {
+        const el = document.createElement("option");
+        el.value = option.value;
+        el.textContent = option.label;
+        select.appendChild(el);
+      });
+    }
+
+    function uniqueValues(values) {
+      return [...new Set(values.map((x) => String(x || "").trim()).filter(Boolean))];
+    }
+
+    function buildItemLabel(item) {
+      const parts = [item.itemName || "-"];
+      if (item.instrumentCode) parts.push(item.instrumentCode);
+      if (item.bemNo) parts.push("BEM " + item.bemNo);
+      return parts.join(" | ");
     }
 
     function safeText(text) {
@@ -965,6 +1191,11 @@
      * 6) Event binding
      ********************************************************/
     $("loginForm").addEventListener("submit", handleLogin);
+    $("qcGroupSelect").addEventListener("change", handleQCGroupChange);
+    $("qcCatalogSelect").addEventListener("change", handleQCCatalogChange);
+    $("qcItemSelect").addEventListener("change", showSelectedQCSummary);
+    $("componentProductSelect").addEventListener("change", handleComponentProductChange);
+    $("componentPreparationSelect").addEventListener("change", showSelectedQCSummary);
     $("logoutBtn").addEventListener("click", handleLogout);
     $("topLogoutBtn").addEventListener("click", handleLogout);
     $("openMenuBtn").addEventListener("click", () => {
