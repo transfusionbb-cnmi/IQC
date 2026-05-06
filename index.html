@@ -1275,9 +1275,9 @@ if (currentEditingLotId && $("existingLotSelect")) {
 }
 
     function getRowValue(row, keys) {
-  if (!row) return "";
+      if (!row) return "";
 
-  for (const key of keys) {
+      for (const key of keys) {
     if (Object.prototype.hasOwnProperty.call(row, key)) {
       const value = row[key];
       if (value !== null && value !== undefined && String(value).trim() !== "") {
