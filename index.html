@@ -404,10 +404,95 @@
           <div class="page-header">
             <div>
               <h2>ตั้งค่า Lot / Expected</h2>
-              <p>สำหรับตั้งค่า Lot และ Expected result</p>
+              <p>เพิ่ม Lot น้ำยา / Cell / Panel / Control และเก็บผู้แก้ไขลง Audit Log</p>
             </div>
+            <button id="reloadLotMasterBtn" class="btn btn-light" type="button" onclick="loadLotSetupMasterData(true)">โหลด Master ใหม่</button>
           </div>
-          <div class="card"><p class="muted">ขั้นถัดไปจะทำ API ดึง/บันทึก Lot และ Expected Matrix</p></div>
+
+          <div class="card">
+            <div class="form-row">
+              <div class="field">
+                <label>กลุ่ม QC</label>
+                <select id="lotQcGroupSelect" onchange="handleLotQCGroupChange()">
+                  <option value="">ยังไม่ได้โหลดข้อมูล</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label>รายการ QC</label>
+                <select id="lotQcCatalogSelect" onchange="handleLotQCCatalogChange()">
+                  <option value="">กรุณาเลือกกลุ่ม QC ก่อน</option>
+                </select>
+              </div>
+            </div>
+
+            <div id="lotItemBox" class="form-row hidden">
+              <div class="field">
+                <label>รายการย่อย / เครื่อง / การทดสอบ</label>
+                <select id="lotItemSelect"></select>
+              </div>
+
+              <div class="field">
+                <label>Lot Type</label>
+                <select id="lotTypeSelect">
+                  <option value="reagent">reagent</option>
+                  <option value="cell">cell</option>
+                  <option value="panel">panel</option>
+                  <option value="control">control</option>
+                  <option value="qc_material">qc_material</option>
+                  <option value="calibrator">calibrator</option>
+                </select>
+              </div>
+            </div>
+
+            <div id="lotComponentBox" class="form-row hidden">
+              <div class="field">
+                <label>ผลิตภัณฑ์</label>
+                <select id="lotComponentProductSelect" onchange="handleLotComponentProductChange()"></select>
+              </div>
+
+              <div class="field">
+                <label>ชนิดถุง / วิธีเตรียม</label>
+                <select id="lotComponentSelect"></select>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="field">
+                <label>Lot No.</label>
+                <input id="lotNoInput" type="text" placeholder="เช่น 69040, 8SS966, QC-Low-001" />
+              </div>
+
+              <div class="field">
+                <label>วันหมดอายุ</label>
+                <input id="lotExpDateInput" type="date" />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="field">
+                <label>วันที่เริ่มใช้</label>
+                <input id="lotStartDateInput" type="date" />
+              </div>
+
+              <div class="field">
+                <label>สถานะ</label>
+                <select id="lotStatusSelect">
+                  <option value="active">active</option>
+                  <option value="inactive">inactive</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field">
+              <label>หมายเหตุ</label>
+              <textarea id="lotNoteInput" rows="3" placeholder="เช่น เปลี่ยน Lot ใหม่ / เปิดใช้งาน QC ขวดใหม่"></textarea>
+            </div>
+
+            <button id="saveLotHeaderBtn" class="btn btn-primary" type="button" onclick="saveLotHeaderFromForm()">บันทึก Lot</button>
+
+            <div id="lotSetupMessage" class="message hidden"></div>
+          </div>
         </section>
 
         <section id="historyPage" class="page hidden">
@@ -671,6 +756,10 @@
       if (pageId === "iqcEntryPage" && !qcMasterData.loaded) {
         loadQCMasterData(false);
       }
+
+      if (pageId === "lotSetupPage") {
+        loadLotSetupMasterData(false);
+      }
     }
 
     async function loadQCMasterData(forceReload = false) {
@@ -818,6 +907,224 @@
       return parts.join(" | ");
     }
 
+    async function loadLotSetupMasterData(forceReload = false) {
+  const token = getToken();
+
+  if (!token) {
+    showLogin();
+    return;
+  }
+
+  if (qcMasterData.loaded && !forceReload) {
+    renderLotSetupDropdowns();
+    return;
+  }
+
+  showMessage("lotSetupMessage", "กำลังโหลด Master สำหรับตั้งค่า Lot...", "success");
+
+  try {
+    const result = await api("getQCMasterData", { token });
+
+    if (!result.ok) {
+      showMessage("lotSetupMessage", result.message || "โหลด Master ไม่สำเร็จ", "error");
+      return;
+    }
+
+    qcMasterData = {
+      catalog: Array.isArray(result.catalog) ? result.catalog : [],
+      items: Array.isArray(result.items) ? result.items : [],
+      components: Array.isArray(result.components) ? result.components : [],
+      loaded: true
+    };
+
+    renderLotSetupDropdowns();
+    showMessage("lotSetupMessage", "โหลด Master สำเร็จ", "success");
+  } catch (err) {
+    showMessage("lotSetupMessage", err.message || String(err), "error");
+  }
+}
+
+function renderLotSetupDropdowns() {
+  const groups = uniqueValues(qcMasterData.catalog.map((item) => item.qcGroup));
+
+  fillSelect(
+    "lotQcGroupSelect",
+    groups.map((group) => ({ value: group, label: group })),
+    "เลือกกลุ่ม QC"
+  );
+
+  fillSelect("lotQcCatalogSelect", [], "กรุณาเลือกกลุ่ม QC ก่อน");
+  fillSelect("lotItemSelect", [], "เลือกรายการย่อย");
+  fillSelect("lotComponentProductSelect", [], "เลือกผลิตภัณฑ์");
+  fillSelect("lotComponentSelect", [], "เลือกชนิดถุง / วิธีเตรียม");
+
+  $("lotItemBox").classList.add("hidden");
+  $("lotComponentBox").classList.add("hidden");
+}
+
+function handleLotQCGroupChange() {
+  const group = $("lotQcGroupSelect").value;
+
+  const catalogList = qcMasterData.catalog.filter((item) => item.qcGroup === group);
+
+  fillSelect(
+    "lotQcCatalogSelect",
+    catalogList.map((item) => ({ value: item.qcId, label: item.qcName })),
+    "เลือกรายการ QC"
+  );
+
+  fillSelect("lotItemSelect", [], "เลือกรายการย่อย");
+  fillSelect("lotComponentProductSelect", [], "เลือกผลิตภัณฑ์");
+  fillSelect("lotComponentSelect", [], "เลือกชนิดถุง / วิธีเตรียม");
+
+  $("lotItemBox").classList.add("hidden");
+  $("lotComponentBox").classList.add("hidden");
+  showMessage("lotSetupMessage", "", "", true);
+}
+
+function handleLotQCCatalogChange() {
+  const qcId = $("lotQcCatalogSelect").value;
+  const selected = qcMasterData.catalog.find((item) => item.qcId === qcId);
+
+  $("lotItemBox").classList.add("hidden");
+  $("lotComponentBox").classList.add("hidden");
+
+  if (!selected) return;
+
+  if (selected.qcGroup === "Blood Component QC") {
+    const productTypes = uniqueValues(qcMasterData.components.map((item) => item.productType));
+
+    fillSelect(
+      "lotComponentProductSelect",
+      productTypes.map((x) => ({ value: x, label: x })),
+      "เลือกผลิตภัณฑ์"
+    );
+
+    fillSelect("lotComponentSelect", [], "เลือกชนิดถุง / วิธีเตรียม");
+    $("lotComponentBox").classList.remove("hidden");
+  } else {
+    const itemList = qcMasterData.items.filter((item) => item.qcId === qcId);
+
+    fillSelect(
+      "lotItemSelect",
+      itemList.map((item) => ({ value: item.itemId, label: buildItemLabel(item) })),
+      "เลือกรายการย่อย"
+    );
+
+    $("lotItemBox").classList.remove("hidden");
+  }
+}
+
+function handleLotComponentProductChange() {
+  const productType = $("lotComponentProductSelect").value;
+
+  const list = qcMasterData.components.filter((item) => item.productType === productType);
+
+  fillSelect(
+    "lotComponentSelect",
+    list.map((item) => ({
+      value: item.componentId,
+      label: item.preparationType + " — " + item.displayName
+    })),
+    "เลือกชนิดถุง / วิธีเตรียม"
+  );
+}
+
+async function saveLotHeaderFromForm() {
+  const token = getToken();
+
+  if (!token) {
+    showLogin();
+    return;
+  }
+
+  const qcId = $("lotQcCatalogSelect").value;
+  const selected = qcMasterData.catalog.find((item) => item.qcId === qcId);
+
+  if (!selected) {
+    showMessage("lotSetupMessage", "กรุณาเลือกรายการ QC", "error");
+    return;
+  }
+
+  let itemId = "";
+  let componentId = "";
+
+  if (selected.qcGroup === "Blood Component QC") {
+    componentId = $("lotComponentSelect").value;
+
+    if (!componentId) {
+      showMessage("lotSetupMessage", "กรุณาเลือกชนิดถุง / วิธีเตรียม", "error");
+      return;
+    }
+  } else {
+    itemId = $("lotItemSelect").value;
+
+    if (!itemId) {
+      showMessage("lotSetupMessage", "กรุณาเลือกรายการย่อย / เครื่อง / การทดสอบ", "error");
+      return;
+    }
+  }
+
+  const lotType = $("lotTypeSelect").value;
+  const lotNo = $("lotNoInput").value.trim();
+  const expDate = $("lotExpDateInput").value;
+  const startDate = $("lotStartDateInput").value;
+  const status = $("lotStatusSelect").value;
+  const note = $("lotNoteInput").value.trim();
+
+  if (!lotNo) {
+    showMessage("lotSetupMessage", "กรุณากรอก Lot No.", "error");
+    return;
+  }
+
+  if (!lotType) {
+    showMessage("lotSetupMessage", "กรุณาเลือก Lot Type", "error");
+    return;
+  }
+
+  const btn = $("saveLotHeaderBtn");
+  btn.disabled = true;
+  btn.textContent = "กำลังบันทึก...";
+
+  try {
+    const result = await api("saveLotHeader", {
+      token,
+      qcId,
+      itemId,
+      componentId,
+      lotType,
+      lotNo,
+      expDate,
+      startDate,
+      endDate: "",
+      status,
+      note,
+      userAgent: navigator.userAgent
+    });
+
+    if (!result.ok) {
+      showMessage("lotSetupMessage", result.message || "บันทึก Lot ไม่สำเร็จ", "error");
+      return;
+    }
+
+    showMessage(
+      "lotSetupMessage",
+      "บันทึก Lot สำเร็จ\nLot ID: " + result.lotId + "\nระบบบันทึก Audit Log แล้ว",
+      "success"
+    );
+
+    $("lotNoInput").value = "";
+    $("lotExpDateInput").value = "";
+    $("lotStartDateInput").value = "";
+    $("lotNoteInput").value = "";
+  } catch (err) {
+    showMessage("lotSetupMessage", err.message || String(err), "error");
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "บันทึก Lot";
+  }
+}
+        
     function safeText(text) {
       return String(text)
         .replaceAll("&", "&amp;")
