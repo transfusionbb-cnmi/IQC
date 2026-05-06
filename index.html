@@ -1190,32 +1190,43 @@
     /********************************************************
      * 6) Event binding
      ********************************************************/
-    $("loginForm").addEventListener("submit", handleLogin);
-    $("qcGroupSelect").addEventListener("change", handleQCGroupChange);
-    $("qcCatalogSelect").addEventListener("change", handleQCCatalogChange);
-    $("qcItemSelect").addEventListener("change", showSelectedQCSummary);
-    $("componentProductSelect").addEventListener("change", handleComponentProductChange);
-    $("componentPreparationSelect").addEventListener("change", showSelectedQCSummary);
-    $("logoutBtn").addEventListener("click", handleLogout);
-    $("topLogoutBtn").addEventListener("click", handleLogout);
-    $("openMenuBtn").addEventListener("click", () => {
-      $("sidebar").classList.toggle("open");
-    });
+    function bind(id, eventName, handler) {
+  const el = $(id);
+  if (!el) {
+    console.warn("ไม่พบ element id:", id);
+    return;
+  }
+  el.addEventListener(eventName, handler);
+}
 
-    document.querySelectorAll(".menu-btn[data-page]").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        if (btn.classList.contains("locked")) return;
-        showPage(btn.dataset.page);
-      });
-    });
+bind("loginForm", "submit", handleLogin);
+bind("qcGroupSelect", "change", handleQCGroupChange);
+bind("qcCatalogSelect", "change", handleQCCatalogChange);
+bind("qcItemSelect", "change", showSelectedQCSummary);
+bind("componentProductSelect", "change", handleComponentProductChange);
+bind("componentPreparationSelect", "change", showSelectedQCSummary);
+bind("logoutBtn", "click", handleLogout);
+bind("topLogoutBtn", "click", handleLogout);
+bind("openMenuBtn", "click", () => {
+  const sidebar = $("sidebar");
+  if (sidebar) sidebar.classList.toggle("open");
+});
 
-    document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape") {
-        $("sidebar").classList.remove("open");
-      }
-    });
+document.querySelectorAll(".menu-btn[data-page]").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    if (btn.classList.contains("locked")) return;
+    showPage(btn.dataset.page);
+  });
+});
 
-    boot();
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    const sidebar = $("sidebar");
+    if (sidebar) sidebar.classList.remove("open");
+  }
+});
+
+boot();
   </script>
 </body>
 </html>
